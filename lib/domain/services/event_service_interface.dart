@@ -5,7 +5,7 @@ abstract class IEventService {
 
   Future<Event> getEventById(int eventId);
 
-  Future<Map<String, Map<String, List<Event>>>> getEventsGroupedByYearMonth();
+  // Future<Map<String, Map<String, List<Event>>>> getEventsGroupedByYearMonth();
 
   Future<List<Event>> getFavouriteEventsByUserId();
 
