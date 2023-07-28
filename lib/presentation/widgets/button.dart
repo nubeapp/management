@@ -23,6 +23,16 @@ class Button extends StatelessWidget {
         blocked = false,
         super(key: key);
 
+  const Button.blue({
+    Key? key,
+    required this.text,
+    this.onPressed,
+    required this.width,
+  })  : color = const Color.fromARGB(255, 47, 123, 255),
+        textColor = Colors.white,
+        blocked = false,
+        super(key: key);
+
   const Button.blocked({
     Key? key,
     required this.text,
@@ -47,10 +57,10 @@ class Button extends StatelessWidget {
       height: context.h * 0.05,
       child: Material(
         color: color, // Apply the background color here
-        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
         child: InkWell(
           onTap: onPressed,
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           child: Center(
             child: Text(
               text,
