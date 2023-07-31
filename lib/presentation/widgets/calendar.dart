@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:validator/extensions/extensions.dart';
-import 'package:validator/presentation/styles/logger.dart';
+import 'package:validator/infrastructure/utilities/helpers.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
 class CalendarData {
@@ -80,6 +80,10 @@ class _CalendarState extends State<Calendar> {
     _currentMonthName = getMonthName(_currentMonth);
   }
 
+  void _dismissWithValue(BuildContext context, dynamic value) {
+    Navigator.pop(context, value);
+  }
+
   void _nextMonth() {
     if (_currentMonth == 12) {
       setState(() {
@@ -121,56 +125,58 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     List<List<int>> days = _data.getCalendarDays(_currentYear, _currentMonth);
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
           children: [
-            IconButton(
-              icon: const Icon(CupertinoIcons.left_chevron),
-              onPressed: _previousMonth,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(CupertinoIcons.left_chevron),
+                  onPressed: _previousMonth,
+                ),
+                Text(
+                  "${getMonthName(_currentMonth)} $_currentYear",
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: const Icon(CupertinoIcons.right_chevron),
+                  onPressed: _nextMonth,
+                ),
+              ],
             ),
-            Text(
-              "${getMonthName(_currentMonth)} $_currentYear",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            IconButton(
-              icon: const Icon(CupertinoIcons.right_chevron),
-              onPressed: _nextMonth,
-            ),
-          ],
-        ),
-        Divider(color: Colors.black26, indent: context.w * 0.01, endIndent: context.w * 0.01),
-        Row(
-          children: List.generate(
-            7,
-            (index) => Expanded(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: context.h * 0.01),
-                  child: Text(
-                    getWeekdayName(index),
-                    style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.black54),
+            Divider(color: Colors.black26, indent: context.w * 0.01, endIndent: context.w * 0.01),
+            Row(
+              children: List.generate(
+                7,
+                (index) => Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: context.h * 0.01),
+                      child: Text(
+                        getWeekdayName(index),
+                        style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.black54),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+            ...days.map((week) => buildWeekRow(week)).toList(),
+            _selectedDay != null
+                ? Button.blue(
+                    text: 'Select',
+                    width: context.w * 0.3,
+                    onPressed: () =>
+                        _dismissWithValue(context, Helpers.formatDateString('$_selectedWeekday, $_selectedDay of $_currentMonthName of $_selectedYear')),
+                    // _dismissWithValue(context, '$_selectedWeekday, $_selectedDay of $_currentMonthName $_selectedYear'),
+                  )
+                : Button.blocked(text: 'Select', width: context.w * 0.3)
+          ],
         ),
-        ...days.map((week) => buildWeekRow(week)).toList(),
-        _selectedDay != null
-            ? Button.blue(
-                text: 'Select', width: context.w * 0.3, onPressed: () => Logger.debug('$_selectedWeekday, $_selectedDay of $_currentMonthName $_selectedYear'))
-            : Button.blocked(text: 'Select', width: context.w * 0.3)
-        // if (_selectedDay != null) // Display the selected day and month
-        //   Container(
-        //     padding: const EdgeInsets.symmetric(vertical: 16),
-        //     child: Text(
-        //       "Selected day: $_selectedWeekday, $_selectedDay of $_currentMonthName $_selectedYear",
-        //       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        //     ),
-        //   ),
-      ],
+      ),
     );
   }
 

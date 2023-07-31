@@ -18,6 +18,36 @@ abstract class Helpers {
     return formattedDate;
   }
 
+  static String formatDateString(String input) {
+    final months = {
+      'January': 'Jan',
+      'February': 'Feb',
+      'March': 'Mar',
+      'April': 'Apr',
+      'May': 'May',
+      'June': 'Jun',
+      'July': 'Jul',
+      'August': 'Aug',
+      'September': 'Sep',
+      'October': 'Oct',
+      'November': 'Nov',
+      'December': 'Dec',
+    };
+
+    final parts = input.split(', ');
+    if (parts.length != 2) {
+      return input; // Return the input string as it is if it doesn't match the expected format
+    }
+
+    final day = parts[1].split(' of ')[0];
+    final month = parts[1].split(' of ')[1];
+    final year = parts[1].split(' of ')[2];
+
+    final abbreviatedMonth = months[month] ?? month;
+
+    return '$day $abbreviatedMonth, $year';
+  }
+
   static String extractMonth(String dateString) {
     // Split the date string by the "-" delimiter
     List<String> dateParts = dateString.split("-");
