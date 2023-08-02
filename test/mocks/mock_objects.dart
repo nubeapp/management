@@ -7,7 +7,6 @@ final mockEventObject = Event(
   date: DateFormat("dd-MM-yyyy").parse("07-12-2023"),
   time: '18:00',
   venue: 'Wizink Center',
-  ticketLimit: 1000,
   organizationId: 1,
 );
 

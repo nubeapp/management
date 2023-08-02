@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
+import '../styles/logger.dart';
+
 class TimePicker extends StatefulWidget {
-  const TimePicker({super.key});
+  const TimePicker({required this.selectedHour, super.key});
+
+  final String selectedHour;
 
   @override
   State<TimePicker> createState() => _TimePickerState();
 }
 
 class _TimePickerState extends State<TimePicker> {
-  int? _selectedHour;
+  String? _selectedHour;
   Color selectedColor = const Color.fromARGB(255, 47, 123, 255);
 
   @override
   void initState() {
     super.initState();
+    _selectedHour = widget.selectedHour;
   }
 
   void _dismissWithValue(BuildContext context, dynamic value) {
@@ -38,7 +43,7 @@ class _TimePickerState extends State<TimePicker> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          _selectedHour = row * 4 + col;
+                          _selectedHour = '${(row * 4 + col).toString().padLeft(2, '0')}:00';
                         });
                       },
                       child: Container(
@@ -46,7 +51,7 @@ class _TimePickerState extends State<TimePicker> {
                         height: context.h * 0.06,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: _selectedHour == row * 4 + col ? selectedColor : Colors.transparent,
+                          color: _selectedHour == '${(row * 4 + col).toString().padLeft(2, '0')}:00' ? selectedColor : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
@@ -54,7 +59,7 @@ class _TimePickerState extends State<TimePicker> {
                           child: Text(
                             '${(row * 4 + col).toString().padLeft(2, '0')}:00',
                             style: TextStyle(
-                              color: _selectedHour == row * 4 + col ? Colors.white : Colors.black,
+                              color: _selectedHour == '${(row * 4 + col).toString().padLeft(2, '0')}:00' ? Colors.white : Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -69,7 +74,7 @@ class _TimePickerState extends State<TimePicker> {
                 ? Button.blue(
                     text: 'Select',
                     width: context.w * 0.3,
-                    onPressed: () => _dismissWithValue(context, '${_selectedHour.toString().padLeft(2, '0')}:00'),
+                    onPressed: () => _dismissWithValue(context, _selectedHour),
                   )
                 : Button.blocked(text: 'Select', width: context.w * 0.3)
           ],

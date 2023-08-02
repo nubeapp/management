@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
+import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
 class CalendarData {
@@ -56,8 +57,9 @@ class CalendarData {
 class Calendar extends StatefulWidget {
   final int year;
   final int month;
+  final int day;
 
-  const Calendar({super.key, required this.year, required this.month});
+  const Calendar({super.key, required this.year, required this.month, required this.day});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -71,12 +73,15 @@ class _CalendarState extends State<Calendar> {
   String? _selectedWeekday;
   late String _currentMonthName;
   Color selectedColor = const Color.fromARGB(255, 47, 123, 255);
+  final CalendarData _data = CalendarData();
 
   @override
   void initState() {
     super.initState();
     _currentYear = widget.year;
+    _selectedYear = widget.year;
     _currentMonth = widget.month;
+    _selectedDay = widget.day;
     _currentMonthName = getMonthName(_currentMonth);
   }
 
@@ -109,8 +114,6 @@ class _CalendarState extends State<Calendar> {
       });
     }
   }
-
-  final CalendarData _data = CalendarData();
 
   void _onDayPressed(int day) {
     setState(() {
@@ -171,7 +174,6 @@ class _CalendarState extends State<Calendar> {
                     width: context.w * 0.3,
                     onPressed: () =>
                         _dismissWithValue(context, Helpers.formatDateString('$_selectedWeekday, $_selectedDay of $_currentMonthName of $_selectedYear')),
-                    // _dismissWithValue(context, '$_selectedWeekday, $_selectedDay of $_currentMonthName $_selectedYear'),
                   )
                 : Button.blocked(text: 'Select', width: context.w * 0.3)
           ],
@@ -212,14 +214,17 @@ class _CalendarState extends State<Calendar> {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             decoration: BoxDecoration(
-                color:
-                    isSelectedDay && (_currentMonthName == getMonthName(_currentMonth)) && (_currentYear == _selectedYear) ? selectedColor : Colors.transparent,
+                color: (day == _selectedDay) && (_currentMonthName == getMonthName(_currentMonth)) && (_currentYear == _selectedYear)
+                    ? selectedColor
+                    : Colors.transparent,
                 borderRadius: const BorderRadius.all(Radius.circular(10))),
             child: Text(
               day != null && day > 0 ? day.toString() : '',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: isSelectedDay && (_currentMonthName == getMonthName(_currentMonth)) && (_currentYear == _selectedYear) ? Colors.white : Colors.black,
+                  color: (day == _selectedDay) && (_currentMonthName == getMonthName(_currentMonth)) && (_currentYear == _selectedYear)
+                      ? Colors.white
+                      : Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 16),
             ),

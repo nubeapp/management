@@ -10,7 +10,6 @@ class Button extends StatelessWidget {
     required this.width,
   })  : color = Colors.black,
         textColor = Colors.white,
-        blocked = false,
         super(key: key);
 
   const Button.white({
@@ -20,7 +19,6 @@ class Button extends StatelessWidget {
     required this.width,
   })  : color = Colors.white,
         textColor = Colors.black87,
-        blocked = false,
         super(key: key);
 
   const Button.blue({
@@ -30,7 +28,6 @@ class Button extends StatelessWidget {
     required this.width,
   })  : color = const Color.fromARGB(255, 47, 123, 255),
         textColor = Colors.white,
-        blocked = false,
         super(key: key);
 
   const Button.blocked({
@@ -40,13 +37,11 @@ class Button extends StatelessWidget {
   })  : onPressed = null,
         color = Colors.black26,
         textColor = Colors.white,
-        blocked = true,
         super(key: key);
 
   final String text;
   final VoidCallback? onPressed;
   final double width;
-  final bool blocked;
   final Color color;
   final Color textColor;
 
