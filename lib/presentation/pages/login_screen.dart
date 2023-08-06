@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -54,11 +55,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Navigator.of(context).push(MaterialPageRoute(
                     settings: const RouteSettings(name: '/main_screen'),
-                    builder: (context) => MainScreen(),
+                    builder: (context) => const MainScreen(),
                   ));
                 },
               ),
       ),
     );
+  }
+}
+
+class LoginBloc {
+  final _authService = GetIt.instance<IAuthService>();
+  final _loadingController = StreamController<bool>.broadcast();
+
+  Stream<bool> get isLoadingStream => _loadingController.stream;
+
+  Future<void> login() async {
+    _loadingController.add(true);
+    Token token = await _authService.login(const Credentials(username: 'alvarolopsi@gmail.com', password: 'alvarolopsi'));
+    await _saveTokenToSharedPreferences(token.toJson());
+    _loadingController.add(false);
+  }
+
+  Future<void> _saveTokenToSharedPreferences(Map<String, dynamic> tokenData) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString('token', json.encode(tokenData));
+  }
+
+  void dispose() {
+    _loadingController.close();
   }
 }

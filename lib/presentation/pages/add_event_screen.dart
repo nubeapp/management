@@ -8,7 +8,6 @@ import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/pages/pages.dart';
 import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/alert_empty_fields.dart';
 import 'package:validator/presentation/widgets/button.dart';
@@ -19,28 +18,27 @@ import 'package:validator/presentation/widgets/label.dart';
 import 'package:validator/presentation/widgets/organization_dropdown.dart';
 import 'package:validator/presentation/widgets/time_picker.dart';
 
-class EditEventScreen extends StatefulWidget {
-  const EditEventScreen({required this.event, super.key});
-
-  final Event event;
+class AddEventScreen extends StatefulWidget {
+  const AddEventScreen({super.key});
 
   @override
-  State<EditEventScreen> createState() => _EditEventScreenState();
+  State<AddEventScreen> createState() => _AddEventScreenState();
 }
 
-class _EditEventScreenState extends State<EditEventScreen> {
+class _AddEventScreenState extends State<AddEventScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _venueController = TextEditingController();
-  late Organization _organizationSelected;
+  Organization? _organizationSelected;
   final IEventService _eventService = GetIt.instance<IEventService>();
   bool _isLoading = false;
 
   void _showCalendar() async {
-    int year = Helpers.getYear(_dateController.text);
-    int month = Helpers.getMonth(_dateController.text);
-    int day = Helpers.getDay(_dateController.text);
+    DateTime today = DateTime.now();
+    int year = today.year;
+    int month = today.month;
+    int day = today.day;
     final String? result = await showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.3),
@@ -96,30 +94,6 @@ class _EditEventScreenState extends State<EditEventScreen> {
     }
   }
 
-  Future<bool> _showConfirmDialog() async {
-    final bool? result = await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: context.w * 0.9,
-                height: context.h * 0.24,
-                child: const AlertConfirmDialog(),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-    return result ?? false;
-  }
-
   void _onOrganizationSelected(Organization organization) {
     setState(() {
       _organizationSelected = organization;
@@ -129,11 +103,6 @@ class _EditEventScreenState extends State<EditEventScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController.text = widget.event.title;
-    _dateController.text = Helpers.formatString(widget.event.date.toString());
-    _timeController.text = widget.event.time;
-    _venueController.text = widget.event.venue;
-    _organizationSelected = widget.event.organization!;
   }
 
   @override
@@ -142,7 +111,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: const Text(
-            'Edit event',
+            'Add event',
             style: TextStyle(color: Colors.black87),
           ),
           leading: IconButton(
@@ -158,22 +127,6 @@ class _EditEventScreenState extends State<EditEventScreen> {
               Navigator.of(context).pop();
             },
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: BorderButton.delete(
-                width: context.w * 0.1,
-                onPressed: () async {
-                  // show dialog
-                  bool delete = await _showConfirmDialog();
-                  if (delete) {
-                    await _eventService.deleteEventById(widget.event.id!);
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ),
-          ],
         );
     return FocusScope(
       child: Scaffold(
@@ -245,14 +198,18 @@ class _EditEventScreenState extends State<EditEventScreen> {
                   SizedBox(height: context.h * 0.02),
                   const Label(label: 'Organization'),
                   SizedBox(
-                      width: context.w * 0.9,
-                      child: OrganizationDropdown(organizationSelected: _organizationSelected, onOrganizationSelected: _onOrganizationSelected)),
+                    width: context.w * 0.9,
+                    child: OrganizationDropdown(
+                      organizationSelected: _organizationSelected,
+                      onOrganizationSelected: _onOrganizationSelected,
+                    ),
+                  ),
                   SizedBox(height: context.h * 0.04),
                   Center(
                     child: _isLoading
                         ? const CircularProgressIndicator(color: Colors.black54)
                         : Button.blue(
-                            text: 'Update',
+                            text: 'Add',
                             width: context.w * 0.5,
                             onPressed: () async {
                               FocusScope.of(context).unfocus();
@@ -264,55 +221,39 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                 CustomToast.showToast(
                                     context: context, message: 'Some data is missed', color: Colors.red, icon: CupertinoIcons.clear, width: context.w * 0.7);
                               } else {
-                                if (widget.event.title != _titleController.text ||
-                                    Helpers.formatString(widget.event.date.toString()) != _dateController.text ||
-                                    widget.event.time != _timeController.text ||
-                                    widget.event.venue != _venueController.text ||
-                                    widget.event.organization != _organizationSelected) {
-                                  // Set the loading state to true
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                Event event = Event(
+                                  title: _titleController.text,
+                                  date: Helpers.convertToISO8601(_dateController.text),
+                                  time: _timeController.text,
+                                  venue: _venueController.text,
+                                  organizationId: _organizationSelected!.id,
+                                );
+                                try {
+                                  // await Future.delayed(const Duration(milliseconds: 2000));
+                                  await _eventService.createEvent(event);
                                   setState(() {
-                                    _isLoading = true;
+                                    _isLoading = false;
                                   });
-
-                                  Event updatedEvent = Event(
-                                    title: _titleController.text,
-                                    date: Helpers.convertToISO8601(_dateController.text),
-                                    time: _timeController.text,
-                                    venue: _venueController.text,
-                                    organizationId: _organizationSelected.id,
-                                  );
-
-                                  try {
-                                    // await Future.delayed(const Duration(milliseconds: 2000));
-                                    await _eventService.updateEventById(widget.event.id!, updatedEvent);
-                                    setState(() {
-                                      _isLoading = false;
-                                    });
-                                    CustomToast.showToast(
-                                        context: context,
-                                        width: context.w * 0.75,
-                                        message: 'Event has been updated',
-                                        color: Colors.green.withOpacity(0.8),
-                                        icon: CupertinoIcons.checkmark_alt_circle);
-                                  } catch (e) {
-                                    setState(() {
-                                      _isLoading = false;
-                                    });
-
-                                    CustomToast.showToast(
-                                        context: context,
-                                        width: context.w * 0.75,
-                                        message: 'Failed to update event',
-                                        color: Colors.red.withOpacity(1),
-                                        icon: CupertinoIcons.clear);
-                                  }
-                                } else {
                                   CustomToast.showToast(
                                       context: context,
-                                      width: context.w * 0.8,
-                                      message: 'No data has been updated',
-                                      color: Colors.orange.withOpacity(1),
-                                      icon: CupertinoIcons.exclamationmark_triangle);
+                                      width: context.w * 0.75,
+                                      message: 'Event has been added',
+                                      color: Colors.green.withOpacity(0.8),
+                                      icon: CupertinoIcons.checkmark_alt_circle);
+                                } catch (e) {
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+
+                                  CustomToast.showToast(
+                                      context: context,
+                                      width: context.w * 0.75,
+                                      message: 'Failed to add event',
+                                      color: Colors.red.withOpacity(1),
+                                      icon: CupertinoIcons.clear);
                                 }
                               }
                             },

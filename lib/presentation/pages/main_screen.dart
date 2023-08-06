@@ -29,7 +29,38 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    PreferredSizeWidget customAppBar() => AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            padding: const EdgeInsets.only(left: 16),
+            icon: const Icon(
+              CupertinoIcons.person,
+              size: 26,
+              color: Colors.black87,
+            ),
+            onPressed: () {
+              Logger.debug('profile');
+            },
+          ),
+          title: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Button.black(
+              text: 'Add event',
+              width: context.w * 0.3,
+              onPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(
+                    settings: const RouteSettings(name: '/add_event_screen'),
+                    builder: (context) => const AddEventScreen(),
+                  ))
+                  .then((_) => updateState()),
+            ),
+          ),
+        );
     return Scaffold(
+      appBar: customAppBar(),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: FutureBuilder<List<Event>>(
@@ -274,25 +305,20 @@ class _EventCardState extends State<EventCard> {
                           children: [
                             Button.black(
                                 text: 'Validate',
-                                width: context.w * 0.35,
+                                width: context.w * 0.4,
                                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                                       settings: const RouteSettings(name: '/validator_screen'),
                                       builder: (context) => ValidationScreen(event: widget.event),
                                     ))),
                             Button.black(
-                                text: 'Edit',
-                                width: context.w * 0.35,
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                        settings: const RouteSettings(name: '/edit_event_screen'),
-                                        builder: (context) => EditEventScreen(event: widget.event),
-                                      ))
-                                      .then((_) => widget.onDataUpdate());
-                                }),
-                            BorderButton.delete(
-                              width: context.w * 0.1,
-                              onPressed: () => Logger.debug('delete event'),
+                              text: 'Edit',
+                              width: context.w * 0.4,
+                              onPressed: () => Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                    settings: const RouteSettings(name: '/edit_event_screen'),
+                                    builder: (context) => EditEventScreen(event: widget.event),
+                                  ))
+                                  .then((_) => widget.onDataUpdate()),
                             ),
                           ],
                         ),

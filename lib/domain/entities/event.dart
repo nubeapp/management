@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/styles/logger.dart';
 
 @immutable
 class Event {

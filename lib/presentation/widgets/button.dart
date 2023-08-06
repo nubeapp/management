@@ -30,6 +30,15 @@ class Button extends StatelessWidget {
         textColor = Colors.white,
         super(key: key);
 
+  const Button.red({
+    Key? key,
+    required this.text,
+    this.onPressed,
+    required this.width,
+  })  : color = Colors.red,
+        textColor = Colors.white,
+        super(key: key);
+
   const Button.blocked({
     Key? key,
     required this.text,

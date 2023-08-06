@@ -6,8 +6,9 @@ import 'package:validator/domain/services/organization_service_interface.dart';
 import 'package:validator/presentation/styles/logger.dart';
 
 class OrganizationDropdown extends StatefulWidget {
-  const OrganizationDropdown({required this.organizationSelected, super.key});
-  final Organization organizationSelected;
+  const OrganizationDropdown({this.organizationSelected, this.onOrganizationSelected, super.key});
+  final Organization? organizationSelected;
+  final Function(Organization)? onOrganizationSelected;
 
   @override
   State<OrganizationDropdown> createState() => _OrganizationDropdownState();
@@ -21,14 +22,19 @@ class _OrganizationDropdownState extends State<OrganizationDropdown> {
   @override
   void initState() {
     super.initState();
-    _organizationService.getOrganizations().then((organizations) {
-      setState(() {
-        _options = organizations;
-        // Search for the organization in the list
-        _selectedOption = _options.firstWhere((organization) => organization.id == widget.organizationSelected.id);
-      });
-    }).catchError((error) {
-      Logger.error(error);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final organizations = await _organizationService.getOrganizations();
+        setState(() {
+          _options = organizations;
+          // Search for the organization in the list
+          if (widget.organizationSelected != null) {
+            _selectedOption = _options.firstWhere((organization) => organization.id == widget.organizationSelected!.id);
+          }
+        });
+      } catch (error) {
+        Logger.error(error.toString());
+      }
     });
   }
 
@@ -40,6 +46,7 @@ class _OrganizationDropdownState extends State<OrganizationDropdown> {
         setState(() {
           _selectedOption = newValue;
         });
+        widget.onOrganizationSelected!(newValue!);
       },
       items: _options.map(
         (organization) {

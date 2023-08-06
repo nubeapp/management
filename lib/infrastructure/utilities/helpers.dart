@@ -54,7 +54,7 @@ abstract class Helpers {
       ];
 
       // Format the date
-      String formattedDate = "${monthNames[month]} ${day.toString().padLeft(2, '0')}, $year";
+      String formattedDate = "${monthNames[month]} $day, $year";
 
       return formattedDate;
     } catch (e) {

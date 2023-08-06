@@ -1,34 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
-import '../styles/logger.dart';
+class TimePicker extends StatelessWidget {
+  const TimePicker({this.selectedHour, super.key});
 
-class TimePicker extends StatefulWidget {
-  const TimePicker({required this.selectedHour, super.key});
-
-  final String selectedHour;
-
-  @override
-  State<TimePicker> createState() => _TimePickerState();
-}
-
-class _TimePickerState extends State<TimePicker> {
-  String? _selectedHour;
-  Color selectedColor = const Color.fromARGB(255, 47, 123, 255);
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedHour = widget.selectedHour;
-  }
-
-  void _dismissWithValue(BuildContext context, dynamic value) {
-    Navigator.pop(context, value);
-  }
+  final String? selectedHour;
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => TimePickerBloc(selectedHour),
+      child: _TimePickerContent(),
+    );
+  }
+}
+
+class _TimePickerContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final timePickerBloc = context.watch<TimePickerBloc>();
+    final selectedHour = timePickerBloc.state;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -42,16 +36,15 @@ class _TimePickerState extends State<TimePicker> {
                   for (int col = 0; col < 4; col++)
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          _selectedHour = '${(row * 4 + col).toString().padLeft(2, '0')}:00';
-                        });
+                        timePickerBloc.selectHour('${(row * 4 + col).toString().padLeft(2, '0')}:00');
                       },
                       child: Container(
                         width: context.w * 0.2,
                         height: context.h * 0.06,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: _selectedHour == '${(row * 4 + col).toString().padLeft(2, '0')}:00' ? selectedColor : Colors.transparent,
+                          color:
+                              selectedHour == '${(row * 4 + col).toString().padLeft(2, '0')}:00' ? const Color.fromARGB(255, 47, 123, 255) : Colors.transparent,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
@@ -59,7 +52,7 @@ class _TimePickerState extends State<TimePicker> {
                           child: Text(
                             '${(row * 4 + col).toString().padLeft(2, '0')}:00',
                             style: TextStyle(
-                              color: _selectedHour == '${(row * 4 + col).toString().padLeft(2, '0')}:00' ? Colors.white : Colors.black,
+                              color: selectedHour == '${(row * 4 + col).toString().padLeft(2, '0')}:00' ? Colors.white : Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -70,16 +63,24 @@ class _TimePickerState extends State<TimePicker> {
                 ],
               ),
             SizedBox(height: context.h * 0.02),
-            _selectedHour != null
+            selectedHour != null && selectedHour.isNotEmpty
                 ? Button.blue(
                     text: 'Select',
                     width: context.w * 0.3,
-                    onPressed: () => _dismissWithValue(context, _selectedHour),
+                    onPressed: () => Navigator.pop(context, selectedHour),
                   )
-                : Button.blocked(text: 'Select', width: context.w * 0.3)
+                : Button.blocked(text: 'Select', width: context.w * 0.3),
           ],
         ),
       ),
     );
+  }
+}
+
+class TimePickerBloc extends Cubit<String?> {
+  TimePickerBloc(String? initialState) : super(initialState);
+
+  void selectHour(String? selectedHour) {
+    emit(selectedHour);
   }
 }

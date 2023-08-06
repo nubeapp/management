@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
 class CalendarData {
@@ -57,9 +56,9 @@ class CalendarData {
 class Calendar extends StatefulWidget {
   final int year;
   final int month;
-  final int day;
+  final int? day;
 
-  const Calendar({super.key, required this.year, required this.month, required this.day});
+  const Calendar({super.key, required this.year, required this.month, this.day});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -200,8 +199,6 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget buildDayCell(int? day) {
-    final isSelectedDay = day == _selectedDay;
-
     return Expanded(
       child: GestureDetector(
         onTap: () {

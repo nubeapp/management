@@ -60,47 +60,49 @@ class InputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      enabled: enabled,
-      onChanged: onChanged,
-      controller: controller,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      textAlignVertical: TextAlignVertical.center,
-      enableSuggestions: false,
-      autocorrect: false,
-      enableInteractiveSelection: false,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 15.0),
-        hintText: hintText,
-        hintStyle: TextStyle(
-          fontSize: 14.0,
-          fontWeight: FontWeight.w400,
-          letterSpacing: 0.7,
-          color: Colors.black.withOpacity(0.3),
-        ),
-        filled: true,
-        fillColor: const Color.fromARGB(255, 240, 240, 240),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Color.fromARGB(255, 47, 123, 255),
-            width: 1.0,
+    return Focus(
+      child: TextFormField(
+        enabled: enabled,
+        onChanged: onChanged,
+        controller: controller,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        textAlignVertical: TextAlignVertical.center,
+        enableSuggestions: false,
+        autocorrect: false,
+        enableInteractiveSelection: false,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 20.0, bottom: 20.0, left: 15.0),
+          hintText: hintText,
+          hintStyle: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.7,
+            color: Colors.black.withOpacity(0.3),
           ),
-          borderRadius: BorderRadius.circular(10.0),
+          filled: true,
+          fillColor: const Color.fromARGB(255, 240, 240, 240),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 47, 123, 255),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          suffixIcon: Icon(
+            suffixIcon,
+            color: Colors.black.withOpacity(0.7),
+          ),
         ),
-        suffixIcon: Icon(
-          suffixIcon,
-          color: Colors.black.withOpacity(0.7),
-        ),
+        cursorColor: Colors.black87,
+        cursorHeight: 16.0,
+        style: const TextStyle(color: Colors.black87, fontSize: 16.0, letterSpacing: 1.0, fontWeight: FontWeight.w500),
       ),
-      cursorColor: Colors.black87,
-      cursorHeight: 16.0,
-      style: const TextStyle(color: Colors.black87, fontSize: 16.0, letterSpacing: 1.0, fontWeight: FontWeight.w500),
     );
   }
 }
