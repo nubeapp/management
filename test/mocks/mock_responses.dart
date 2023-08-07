@@ -1,5 +1,17 @@
 /* 
   +----------------------------+
+  |     Mock Auth Responses    |
+  +----------------------------+
+*/
+
+const mockTokenResponse = {
+  "access_token":
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  "token_type": "bearer"
+};
+
+/* 
+  +----------------------------+
   |     Mock Event Responses   |
   +----------------------------+
 */
@@ -44,3 +56,29 @@ const mockEventResponse = {
     "name": "UNIVERSAL MUSIC SPAIN",
   },
 };
+
+/* 
+  +----------------------------+
+  | Mock Organization Responses|
+  +----------------------------+
+*/
+
+final mockOrganizationResponse = {
+  "id": 1,
+  "name": "UNIVERSAL MUSIC SPAIN",
+};
+
+const mockOrganizationListResponse = [
+  {
+    "id": 1,
+    "name": "UNIVERSAL MUSIC SPAIN",
+  },
+  {
+    "id": 2,
+    "name": "WARNER BROS MUSIC",
+  },
+  {
+    "id": 3,
+    "name": "SONY MUSIC ENTERTAINMENT",
+  }
+];

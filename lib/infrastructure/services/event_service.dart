@@ -27,37 +27,6 @@ class EventService implements IEventService {
     }
   }
 
-  // @override
-  // Future<Map<String, Map<String, List<Event>>>> getEventsGroupedByYearMonth() async {
-  //   try {
-  //     Logger.debug('Requesting all events from the database...');
-  //     final response = await client.get(Uri.parse('$API_BASE_URL/yearmonth'));
-
-  //     if (response.statusCode == 200) {
-  //       Logger.info('Events have been retrieved successfully!');
-  //       final Map<String, dynamic> data = json.decode(utf8.decode(response.bodyBytes));
-
-  //       // Create a map to store events grouped by year and month
-  //       Map<String, Map<String, List<Event>>> eventsGrouped = {};
-
-  //       // Iterate through the response and convert it to the desired format
-  //       data.forEach((year, monthsData) {
-  //         eventsGrouped[year] = {};
-  //         monthsData.forEach((month, eventsData) {
-  //           final List<Event> eventsList = eventsData.map((eventData) => Event.fromJson(eventData)).toList();
-  //           eventsGrouped[year]![month] = eventsList;
-  //         });
-  //       });
-
-  //       return eventsGrouped;
-  //     } else {
-  //       throw Exception('Failed to get events. Status code: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
-
   @override
   Future<Event> getEventById(int eventId) async {
     try {

@@ -8,8 +8,6 @@ import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/styles/logger.dart';
-import 'package:validator/presentation/widgets/alert_empty_fields.dart';
 import 'package:validator/presentation/widgets/button.dart';
 import 'package:validator/presentation/widgets/calendar.dart';
 import 'package:validator/presentation/widgets/custom_toast.dart';
@@ -33,6 +31,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   Organization? _organizationSelected;
   final IEventService _eventService = GetIt.instance<IEventService>();
   bool _isLoading = false;
+  final List<List<TextEditingController>> _controllerRows = [];
 
   void _showCalendar() async {
     DateTime today = DateTime.now();
@@ -103,6 +102,35 @@ class _AddEventScreenState extends State<AddEventScreen> {
   @override
   void initState() {
     super.initState();
+    _addRow();
+  }
+
+  void _addRow() {
+    setState(() {
+      _controllerRows.add([
+        TextEditingController(),
+        TextEditingController(),
+      ]);
+    });
+  }
+
+  void _removeRow(int rowIndex) {
+    setState(() {
+      for (var controller in _controllerRows[rowIndex]) {
+        controller.dispose();
+      }
+      _controllerRows.removeAt(rowIndex);
+    });
+  }
+
+  @override
+  void dispose() {
+    for (var row in _controllerRows) {
+      for (var controller in row) {
+        controller.dispose();
+      }
+    }
+    super.dispose();
   }
 
   @override
@@ -259,6 +287,46 @@ class _AddEventScreenState extends State<AddEventScreen> {
                             },
                           ),
                   ),
+                  // Container(
+                  //   width: context.w * 0.9,
+                  //   height: context.h * 0.8,
+                  //   child: ListView.builder(
+                  //     itemCount: _controllerRows.length,
+                  //     itemBuilder: (context, rowIndex) {
+                  //       return Row(
+                  //         children: [
+                  //           Expanded(
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.all(8.0),
+                  //               child: InputField.text(
+                  //                 hintText: '10',
+                  //                 controller: _controllerRows[rowIndex][0],
+                  //                 onChanged: null,
+                  //                 suffixIcon: null,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           Expanded(
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.all(8.0),
+                  //               child: InputField.text(
+                  //                 hintText: '30€',
+                  //                 controller: _controllerRows[rowIndex][1],
+                  //                 onChanged: null,
+                  //                 suffixIcon: null,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           if (_controllerRows.length > 1) // Only show delete button if there is more than 1 row
+                  //             IconButton(
+                  //               icon: const Icon(Icons.delete),
+                  //               onPressed: () => _removeRow(rowIndex),
+                  //             ),
+                  //         ],
+                  //       );
+                  //     },
+                  //   ),
+                  // )
                 ],
               ),
             ),

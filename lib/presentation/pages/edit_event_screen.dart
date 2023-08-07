@@ -8,9 +8,8 @@ import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/pages/pages.dart';
-import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/alert_empty_fields.dart';
+import 'package:validator/presentation/widgets/border_button.dart';
 import 'package:validator/presentation/widgets/button.dart';
 import 'package:validator/presentation/widgets/calendar.dart';
 import 'package:validator/presentation/widgets/custom_toast.dart';
@@ -259,8 +258,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                               if (_titleController.text.isEmpty ||
                                   _dateController.text.isEmpty ||
                                   _timeController.text.isEmpty ||
-                                  _venueController.text.isEmpty ||
-                                  _organizationSelected == null) {
+                                  _venueController.text.isEmpty) {
                                 CustomToast.showToast(
                                     context: context, message: 'Some data is missed', color: Colors.red, icon: CupertinoIcons.clear, width: context.w * 0.7);
                               } else {

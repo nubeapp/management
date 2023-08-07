@@ -305,14 +305,14 @@ class _EventCardState extends State<EventCard> {
                           children: [
                             Button.black(
                                 text: 'Validate',
-                                width: context.w * 0.4,
+                                width: context.w * 0.3,
                                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                                       settings: const RouteSettings(name: '/validator_screen'),
                                       builder: (context) => ValidationScreen(event: widget.event),
                                     ))),
                             Button.black(
                               text: 'Edit',
-                              width: context.w * 0.4,
+                              width: context.w * 0.25,
                               onPressed: () => Navigator.of(context)
                                   .push(MaterialPageRoute(
                                     settings: const RouteSettings(name: '/edit_event_screen'),
@@ -320,6 +320,14 @@ class _EventCardState extends State<EventCard> {
                                   ))
                                   .then((_) => widget.onDataUpdate()),
                             ),
+                            Button.black(
+                              text: 'Tickets',
+                              width: context.w * 0.3,
+                              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                                settings: const RouteSettings(name: '/tickets_screen'),
+                                builder: (context) => TicketsScreen(event: widget.event),
+                              )),
+                            )
                           ],
                         ),
                       ),
@@ -329,47 +337,6 @@ class _EventCardState extends State<EventCard> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class BorderButton extends StatelessWidget {
-  const BorderButton({
-    required this.width,
-    required this.color,
-    required this.onPressed,
-    required this.icon,
-    Key? key,
-  }) : super(key: key);
-
-  const BorderButton.delete({
-    required this.width,
-    required this.onPressed,
-    Key? key,
-  })  : color = Colors.red,
-        icon = CupertinoIcons.delete_simple,
-        super(key: key);
-
-  final double width;
-  final Color color;
-  final VoidCallback? onPressed;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: context.h * 0.05,
-      decoration: BoxDecoration(border: Border.all(color: color, width: 2), borderRadius: BorderRadius.circular(10)),
-      child: Material(
-        color: Colors.transparent, // Apply the background color here
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          child: Center(child: Icon(icon, color: color)),
         ),
       ),
     );

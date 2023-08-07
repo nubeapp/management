@@ -33,8 +33,8 @@ void main() {
         expect(events[1].id, equals(2));
         expect(events[0].title, 'Bad Bunny Concert');
         expect(events[1].title, 'Rosalia Concert');
-        expect(events[0].date, CustomDateTime(2023, 12, 07));
-        expect(events[1].date, CustomDateTime(2023, 12, 14));
+        expect(events[0].date, '07-12-2023');
+        expect(events[1].date, '14-12-2023');
         expect(events[0].time, '18:00');
         expect(events[1].time, '18:00');
         expect(events[0].venue, 'Wizink Center');
@@ -72,7 +72,7 @@ void main() {
         expect(event, isA<Event>());
         expect(event.id, equals(1));
         expect(event.title, 'Bad Bunny Concert');
-        expect(event.date, CustomDateTime(2023, 12, 07));
+        expect(event.date, '07-12-2023');
         expect(event.time, '18:00');
         expect(event.venue, 'Wizink Center');
         expect(event.organization!.id, equals(1));
@@ -111,8 +111,8 @@ void main() {
         expect(events[1].id, equals(2));
         expect(events[0].title, 'Bad Bunny Concert');
         expect(events[1].title, 'Rosalia Concert');
-        expect(events[0].date, CustomDateTime(2023, 12, 07));
-        expect(events[1].date, CustomDateTime(2023, 12, 14));
+        expect(events[0].date, '07-12-2023');
+        expect(events[1].date, '14-12-2023');
         expect(events[0].time, '18:00');
         expect(events[1].time, '18:00');
         expect(events[0].venue, 'Wizink Center');
@@ -153,8 +153,8 @@ void main() {
         expect(events[1].id, equals(2));
         expect(events[0].title, 'Bad Bunny Concert');
         expect(events[1].title, 'Rosalia Concert');
-        expect(events[0].date, CustomDateTime(2023, 12, 07));
-        expect(events[1].date, CustomDateTime(2023, 12, 14));
+        expect(events[0].date, '07-12-2023');
+        expect(events[1].date, '14-12-2023');
         expect(events[0].time, '18:00');
         expect(events[1].time, '18:00');
         expect(events[0].venue, 'Wizink Center');
@@ -197,7 +197,7 @@ void main() {
         expect(event, isA<Event>());
         expect(event.id, equals(1));
         expect(event.title, 'Bad Bunny Concert');
-        expect(event.date, CustomDateTime(2023, 12, 07));
+        expect(event.date, '07-12-2023');
         expect(event.time, '18:00');
         expect(event.venue, 'Wizink Center');
         expect(event.organization!.id, equals(1));
@@ -254,7 +254,7 @@ void main() {
         expect(event, isA<Event>());
         expect(event.id, equals(1));
         expect(event.title, 'Bad Bunny Concert');
-        expect(event.date, CustomDateTime(2023, 12, 07));
+        expect(event.date, '07-12-2023');
         expect(event.time, '18:00');
         expect(event.venue, 'Wizink Center');
         expect(event.organization!.id, equals(1));
