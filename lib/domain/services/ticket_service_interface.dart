@@ -10,4 +10,6 @@ abstract class ITicketService {
   Future<TicketSummary> getTicketsByEventId(int eventId);
   Future<TicketSummary> createTickets(CreateTicket ticketData);
   Future<TicketSummary> buyTickets(Order order);
+  Future<void> deleteTicketById(int ticketId);
+  Future<void> deleteTicketsByEventId(int eventId);
 }

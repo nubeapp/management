@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/services/validation_service_interface.dart';
 import 'package:http/http.dart' as http;
 import 'package:validator/infrastructure/services/validation_service.dart';
@@ -13,7 +14,7 @@ import 'validation_service_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   late IValidationService validationService;
-  const String API_BASE_URL = 'http://192.168.1.73:8000/validation';
+  const String API_BASE_URL = 'http://$LOCALHOST:8000/validation';
 
   group('ValidationService', () {
     group('validateTicket', () {

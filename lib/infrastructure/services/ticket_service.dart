@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/order.dart';
 import 'package:validator/domain/entities/ticket/create_ticket.dart';
 import 'package:validator/domain/entities/ticket/ticket_summary.dart';
@@ -9,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:validator/presentation/styles/logger.dart';
 
 class TicketService implements ITicketService {
-  static String get API_BASE_URL => 'http://192.168.1.73:8000/tickets';
+  static String get API_BASE_URL => 'http://$LOCALHOST:8000/tickets';
   final http.Client client;
 
   TicketService({required this.client});
@@ -130,6 +131,37 @@ class TicketService implements ITicketService {
       } else {
         throw Exception('Failed to buy ticket');
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteTicketById(int ticketId) async {
+    try {
+      Logger.debug('Deleting ticket with id $ticketId...');
+      final response = await client.delete(Uri.parse('$API_BASE_URL/$ticketId'));
+
+      if (response.statusCode != 204) {
+        throw Exception('Failed to delete ticket by id. Status code: ${response.statusCode}');
+      }
+
+      Logger.info('Ticket with id $ticketId has been deleted successfully!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteTicketsByEventId(int eventId) async {
+    try {
+      Logger.debug('Deleting tickets by event_id $eventId...');
+      final response = await client.delete(Uri.parse('$API_BASE_URL/event/$eventId'));
+
+      if (response.statusCode != 204) {
+        throw Exception('Failed to delete events by organization_id. Status code: ${response.statusCode}');
+      }
+      Logger.info('Tickets by event_id $eventId have been deleted successfully!');
     } catch (e) {
       rethrow;
     }

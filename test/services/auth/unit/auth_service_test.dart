@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/token.dart';
 import 'package:validator/domain/services/auth_service_interface.dart';
 import 'package:validator/infrastructure/services/auth_service.dart';
@@ -14,7 +15,7 @@ import 'auth_service_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
-  const String API_BASE_URL = 'http://192.168.1.73:8000/login';
+  const String API_BASE_URL = 'http://$LOCALHOST:8000/login';
   late IAuthService authService;
 
   group('AuthService', () {

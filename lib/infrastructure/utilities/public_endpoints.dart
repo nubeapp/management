@@ -1,6 +1,8 @@
+import 'package:validator/config/app_config.dart';
+
 abstract class PublicEndpoints {
   static List<String> endpoints = [
-    // 'http://192.168.1.73:8000/events',
-    'http://192.168.1.73:8000/',
+    // 'http://$LOCALHOST:8000/events',
+    'http://$LOCALHOST:8000/',
   ];
 }

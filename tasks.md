@@ -9,4 +9,7 @@
 - (P1) Error validation in EditEventScreen (Only for title InputField and venue InputField) ✅
 - (P1) Style CustomToast ✅
 - (P1) Fix String when passing the value from MainScreen to EditEventScreen and set the date ✅
-- (P2) Tests
+- (P2) Tests ✅
+- (P2) Only show events which date is after today ✅
+- (P3) 'Add tickets' feature
+- (P1) TicketInfoScreen

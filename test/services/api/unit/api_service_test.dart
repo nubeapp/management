@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:validator/config/app_config.dart';
 import 'package:validator/infrastructure/services/api_service.dart';
 
 import 'api_service_test.mocks.dart';
@@ -11,7 +12,7 @@ void main() {
   group('ApiService', () {
     // Declare variables
     late ApiService apiService;
-    const String API_BASE_URL = 'http://192.168.1.73:8000/';
+    const String API_BASE_URL = 'http://$LOCALHOST:8000/';
 
     group('connectAPI', () {
       test('returns "Server is running..."', () async {

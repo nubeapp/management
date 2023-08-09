@@ -109,7 +109,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
               child: SizedBox(
                 width: context.w * 0.9,
                 height: context.h * 0.24,
-                child: const AlertConfirmDialog(),
+                child: const AlertConfirmDialog(element: 'event'),
               ),
             ),
           ),

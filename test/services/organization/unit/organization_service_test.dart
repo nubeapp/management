@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/organization_service_interface.dart';
 import 'package:validator/infrastructure/services/organization_service.dart';
@@ -14,7 +15,7 @@ import 'organization_service_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   late IOrganizationService organizationService;
-  const String API_BASE_URL = 'http://192.168.1.73:8000/organizations';
+  const String API_BASE_URL = 'http://$LOCALHOST:8000/organizations';
 
   group('OrganizationService', () {
     group('getOrganizations', () {

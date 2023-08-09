@@ -6,6 +6,7 @@ import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/presentation/pages/pages.dart';
 import 'package:validator/presentation/styles/logger.dart';
+import 'package:validator/presentation/widgets/border_button.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
 import '../../infrastructure/utilities/helpers.dart';
@@ -305,14 +306,14 @@ class _EventCardState extends State<EventCard> {
                           children: [
                             Button.black(
                                 text: 'Validate',
-                                width: context.w * 0.3,
+                                width: context.w * 0.27,
                                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                                       settings: const RouteSettings(name: '/validator_screen'),
                                       builder: (context) => ValidationScreen(event: widget.event),
                                     ))),
                             Button.black(
                               text: 'Edit',
-                              width: context.w * 0.25,
+                              width: context.w * 0.27,
                               onPressed: () => Navigator.of(context)
                                   .push(MaterialPageRoute(
                                     settings: const RouteSettings(name: '/edit_event_screen'),
@@ -322,12 +323,12 @@ class _EventCardState extends State<EventCard> {
                             ),
                             Button.black(
                               text: 'Tickets',
-                              width: context.w * 0.3,
+                              width: context.w * 0.27,
                               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                                 settings: const RouteSettings(name: '/tickets_screen'),
                                 builder: (context) => TicketsScreen(event: widget.event),
                               )),
-                            )
+                            ),
                           ],
                         ),
                       ),

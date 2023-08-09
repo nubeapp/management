@@ -3,7 +3,9 @@ import 'package:validator/extensions/extensions.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
 class AlertConfirmDialog extends StatefulWidget {
-  const AlertConfirmDialog({super.key});
+  const AlertConfirmDialog({super.key, required this.element});
+
+  final String element;
 
   @override
   State<AlertConfirmDialog> createState() => _AlertConfirmDialogState();
@@ -20,10 +22,10 @@ class _AlertConfirmDialogState extends State<AlertConfirmDialog> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 18),
             child: Text(
-              'Are you sure you want to delete the event? This action can not be undone',
+              'Are you sure you want to delete the ${widget.element}? This action can not be undone',
               style: TextStyle(
                 color: Colors.black87,
                 fontSize: 20,

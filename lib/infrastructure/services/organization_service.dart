@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/organization.dart';
 import 'package:http/http.dart' as http;
 import 'package:validator/domain/services/organization_service_interface.dart';
@@ -9,7 +10,7 @@ class OrganizationService implements IOrganizationService {
   OrganizationService({required this.client});
 
   final http.Client client;
-  static String get API_BASE_URL => 'http://192.168.1.73:8000/organizations';
+  static String get API_BASE_URL => 'http://$LOCALHOST:8000/organizations';
 
   @override
   Future<List<Organization>> getOrganizations() async {

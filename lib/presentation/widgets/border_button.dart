@@ -27,6 +27,14 @@ class BorderButton extends StatelessWidget {
         icon = CupertinoIcons.search,
         super(key: key);
 
+  const BorderButton.edit({
+    required this.width,
+    required this.onPressed,
+    Key? key,
+  })  : color = Colors.black,
+        icon = CupertinoIcons.pen,
+        super(key: key);
+
   final double width;
   final Color color;
   final VoidCallback? onPressed;

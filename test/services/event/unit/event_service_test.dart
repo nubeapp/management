@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/infrastructure/services/event_service.dart';
@@ -15,7 +16,7 @@ import 'event_service_test.mocks.dart';
 @GenerateMocks([http.Client])
 void main() {
   late IEventService eventService;
-  const String API_BASE_URL = 'http://192.168.1.73:8000/events';
+  const String API_BASE_URL = 'http://$LOCALHOST:8000/events';
 
   group('EventService', () {
     group('getEvents', () {

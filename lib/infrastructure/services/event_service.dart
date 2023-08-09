@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/presentation/styles/logger.dart';
@@ -7,7 +8,7 @@ import 'package:validator/presentation/styles/logger.dart';
 class EventService implements IEventService {
   EventService({required this.client});
 
-  static String get API_BASE_URL => 'http://192.168.1.73:8000/events';
+  static String get API_BASE_URL => 'http://$LOCALHOST:8000/events';
   final http.Client client;
 
   @override

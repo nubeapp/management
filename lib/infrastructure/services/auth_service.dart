@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/credentials.dart';
 import 'package:validator/domain/entities/token.dart';
 import 'package:validator/domain/services/auth_service_interface.dart';
@@ -7,7 +8,7 @@ import 'package:validator/presentation/styles/logger.dart';
 
 class AuthService implements IAuthService {
   AuthService({required this.client});
-  static String get API_BASE_URL => 'http://192.168.1.73:8000/login';
+  static String get API_BASE_URL => 'http://$LOCALHOST:8000/login';
   final http.Client client;
 
   @override

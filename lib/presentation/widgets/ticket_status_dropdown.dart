@@ -1,10 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/entities/ticket/ticket_status.dart';
-import 'package:validator/domain/services/organization_service_interface.dart';
-import 'package:validator/presentation/styles/logger.dart';
 
 class TicketStatusDropdown extends StatefulWidget {
   const TicketStatusDropdown({super.key, this.onStatusSelected});

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:validator/config/app_config.dart';
 import 'package:validator/domain/entities/validation_data.dart';
 import 'package:validator/domain/services/validation_service_interface.dart';
 import 'package:validator/presentation/styles/logger.dart';
@@ -7,7 +8,7 @@ import 'package:validator/presentation/styles/logger.dart';
 class ValidationService implements IValidationService {
   ValidationService({required this.client});
 
-  static String get API_BASE_URL => 'http://192.168.1.73:8000/validation';
+  static String get API_BASE_URL => 'http://$LOCALHOST:8000/validation';
   final http.Client client;
 
   @override

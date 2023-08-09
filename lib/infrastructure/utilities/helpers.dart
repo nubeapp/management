@@ -207,4 +207,11 @@ abstract class Helpers {
       return 0; // Return 0 or some other appropriate value to indicate an error
     }
   }
+
+  static String capitalizeFirstLetter(String input) {
+    if (input.isEmpty) {
+      return input; // Return the input string as-is if it's empty
+    }
+    return input[0].toUpperCase() + input.substring(1).toLowerCase();
+  }
 }
