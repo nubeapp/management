@@ -16,6 +16,8 @@ import 'package:validator/presentation/widgets/button.dart';
 import 'package:validator/presentation/widgets/custom_toast.dart';
 import 'package:validator/presentation/widgets/label.dart';
 import 'package:intl/intl.dart';
+import 'package:validator/presentation/widgets/light_label.dart';
+import 'package:validator/presentation/widgets/status_label.dart';
 
 class TicketInfoScreen extends StatefulWidget {
   const TicketInfoScreen({Key? key, required this.ticket}) : super(key: key);
@@ -102,6 +104,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
   }
 
   Ticket _createCanceledTicket(Ticket originalTicket) {
+    Logger.debug('Time -> ${Helpers.convertDbDateTimeToDateTime(DateTime.now().toIso8601String())}');
     return Ticket(
       id: originalTicket.id,
       reference: originalTicket.reference,
@@ -113,6 +116,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
       orderId: originalTicket.orderId,
       user: originalTicket.user,
       userId: originalTicket.userId,
+      canceledAt: Helpers.convertDbDateTimeToDateTime(DateTime.now().toIso8601String()),
     );
   }
 
@@ -142,6 +146,25 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
     }
   }
 
+  StatusLabel getStatusLabelFromTicketStatus(Ticket ticket) {
+    switch (ticket.status) {
+      case TicketStatus.AVAILABLE:
+        return StatusLabel.available();
+      case TicketStatus.SOLD:
+        return StatusLabel.sold();
+      case TicketStatus.VALIDATED:
+        return const StatusLabel.validated();
+      case TicketStatus.CANCELED:
+        return const StatusLabel.canceled();
+      default:
+        return const StatusLabel(
+          status: 'Not found',
+          color: Colors.orange,
+          textColor: Colors.white70,
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,7 +187,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const LightLabel(label: 'Status'),
-                      Label(label: _updatedTicket.status.name),
+                      getStatusLabelFromTicketStatus(_updatedTicket),
                       SizedBox(height: context.h * 0.02),
                       if (_updatedTicket.user != null) const LightLabel(label: 'Name'),
                       if (_updatedTicket.user != null) Label(label: _updatedTicket.user!.name),
@@ -187,7 +210,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                       SizedBox(height: context.h * 0.02),
                       if (_updatedTicket.user != null) const LightLabel(label: 'Surname'),
                       if (_updatedTicket.user != null) Label(label: _updatedTicket.user!.surname),
-                      if (_updatedTicket.status != TicketStatus.AVAILABLE) SizedBox(height: context.h * 0.02),
+                      if (_updatedTicket.user != null) SizedBox(height: context.h * 0.02),
                       if (_updatedTicket.status != TicketStatus.AVAILABLE)
                         LightLabel(label: '${Helpers.capitalizeFirstLetter(_updatedTicket.status.name)} time'),
                       if (_updatedTicket.status != TicketStatus.AVAILABLE) Label(label: getStatusTimeFromTicket(_updatedTicket)),
@@ -197,7 +220,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                 ),
               ],
             ),
-            if (_updatedTicket.status == TicketStatus.AVAILABLE)
+            if (_updatedTicket.status != TicketStatus.CANCELED || _updatedTicket.status != TicketStatus.VALIDATED)
               _isLoading
                   ? const CircularProgressIndicator(color: Colors.black54)
                   : Button.red(
@@ -211,6 +234,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                         try {
                           await Future.delayed(const Duration(milliseconds: 2000));
                           await _ticketService.cancelTicket(_updatedTicket.id!);
+                          _updatedTicket = _createCanceledTicket(widget.ticket);
                           setState(() {
                             _isLoading = false;
                           });
@@ -220,7 +244,6 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                               message: 'Ticket has been cancelled',
                               color: Colors.green.withOpacity(0.8),
                               icon: CupertinoIcons.checkmark_alt_circle);
-                          _updatedTicket = _createCanceledTicket(_updatedTicket);
                           cancel = true;
                         } catch (e) {
                           setState(() {
@@ -237,30 +260,6 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                       },
                     ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class LightLabel extends StatelessWidget {
-  const LightLabel({
-    Key? key,
-    required this.label,
-  }) : super(key: key);
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.black54,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
         ),
       ),
     );

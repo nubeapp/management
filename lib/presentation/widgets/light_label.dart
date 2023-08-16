@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Label extends StatelessWidget {
-  const Label({
+class LightLabel extends StatelessWidget {
+  const LightLabel({
     Key? key,
     required this.label,
   }) : super(key: key);
@@ -15,7 +15,7 @@ class Label extends StatelessWidget {
       child: Text(
         label,
         style: const TextStyle(
-          color: Colors.black87,
+          color: Colors.black54,
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),

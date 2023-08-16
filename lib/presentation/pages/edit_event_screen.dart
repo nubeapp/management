@@ -267,7 +267,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                   _timeController.text.isEmpty ||
                                   _venueController.text.isEmpty) {
                                 CustomToast.showToast(
-                                    context: context, message: 'Some data is missed', color: Colors.red, icon: CupertinoIcons.clear, width: context.w * 0.7);
+                                    context: context, message: 'Some data is missing', color: Colors.red, icon: CupertinoIcons.clear, width: context.w * 0.7);
                               } else {
                                 if (widget.event.title != _titleController.text ||
                                     Helpers.formatString(widget.event.date.toString()) != _dateController.text ||

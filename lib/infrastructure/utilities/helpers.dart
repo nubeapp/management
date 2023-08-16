@@ -210,7 +210,7 @@ abstract class Helpers {
   }
 
   // 2023-08-27T20:00:00+02:00 -> 27-08-2023 20:00
-  static String convertDbDateTimetoDateTime(String input) {
+  static String convertDbDateTimeToDateTime(String input) {
     try {
       DateTime dateTime = DateTime.parse(input);
 

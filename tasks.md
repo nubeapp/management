@@ -11,11 +11,14 @@
 - (P1) Fix String when passing the value from MainScreen to EditEventScreen and set the date ✅
 - (P2) Tests ✅
 - (P2) Only show events which date is after today ✅
-- (P3) 'Add tickets' feature
-- (P1) TicketInfoScreen
+- (P1) TicketInfoScreen ✅
 - (P2) Delete ticket feature ✅
 - (P1) Cancel ticket feature ✅
 - (P1) Visibility for 'Cancel ticket' functionality based on current status of the ticket ✅
-- (P2) Sold, Cancel and Validate datetime
-- (P1) On deleting an event, delete all the tickets of that event
+- (P2) Sold, Cancel and Validate datetime ✅
+- (P1) On deleting an event, delete all the tickets of that event ✅
 - (P1) Let search references in lower or upper case ✅
+- (P3) Support multiple tickets type and multiple prices for tickets of the same event
+- (P3) 'Add tickets' feature
+- (P2) Show TicketStatus history, with StatusLabel, Date and Time
+- (P2) Add new feature of EventStatus (INCOMING, IN PROGRESS, FINISHED, CANCELED), and if some event is canceled, cancel all their tickets. Also, dont let buy new tickets if the event is 'IN PROGRESS' or 'FINISHED' or 'CANCELED'

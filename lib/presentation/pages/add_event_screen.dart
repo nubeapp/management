@@ -247,7 +247,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                                   _venueController.text.isEmpty ||
                                   _organizationSelected == null) {
                                 CustomToast.showToast(
-                                    context: context, message: 'Some data is missed', color: Colors.red, icon: CupertinoIcons.clear, width: context.w * 0.7);
+                                    context: context, message: 'Some data is missing', color: Colors.red, icon: CupertinoIcons.clear, width: context.w * 0.7);
                               } else {
                                 setState(() {
                                   _isLoading = true;

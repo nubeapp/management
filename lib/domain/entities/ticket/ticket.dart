@@ -49,9 +49,9 @@ class Ticket {
       ),
       event: json['event'] != null ? Event.fromJson(json['event']) : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
-      soldAt: json['sold_at'] != null ? Helpers.convertDbDateTimetoDateTime(json['sold_at']) : null,
-      validatedAt: json['validated_at'] != null ? Helpers.convertDbDateTimetoDateTime(json['validated_at']) : null,
-      canceledAt: json['canceled_at'] != null ? Helpers.convertDbDateTimetoDateTime(json['canceled_at']) : null,
+      soldAt: json['sold_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['sold_at']) : null,
+      validatedAt: json['validated_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['validated_at']) : null,
+      canceledAt: json['canceled_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['canceled_at']) : null,
     );
   }
 
