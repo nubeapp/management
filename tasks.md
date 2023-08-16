@@ -13,3 +13,9 @@
 - (P2) Only show events which date is after today ✅
 - (P3) 'Add tickets' feature
 - (P1) TicketInfoScreen
+- (P2) Delete ticket feature ✅
+- (P1) Cancel ticket feature ✅
+- (P1) Visibility for 'Cancel ticket' functionality based on current status of the ticket ✅
+- (P2) Sold, Cancel and Validate datetime
+- (P1) On deleting an event, delete all the tickets of that event
+- (P1) Let search references in lower or upper case ✅

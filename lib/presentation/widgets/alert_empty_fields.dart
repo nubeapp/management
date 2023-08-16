@@ -23,10 +23,10 @@ class _AlertConfirmDialogState extends State<AlertConfirmDialog> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Text(
               'Are you sure you want to delete the ${widget.element}? This action can not be undone',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black87,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,

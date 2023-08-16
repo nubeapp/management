@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:validator/presentation/styles/logger.dart';
 
 abstract class Helpers {
   static String dateStringToWeekday(String dateString) {
@@ -208,6 +209,74 @@ abstract class Helpers {
     }
   }
 
+  // 2023-08-27T20:00:00+02:00 -> 27-08-2023 20:00
+  static String convertDbDateTimetoDateTime(String input) {
+    try {
+      DateTime dateTime = DateTime.parse(input);
+
+      // Parse the input string with offset information
+      dateTime = DateTime.parse(input).toLocal();
+
+      // Format the DateTime object in the desired format
+      String formattedDate = DateFormat("dd-MM-yyyy HH:mm").format(dateTime);
+      return formattedDate;
+    } catch (e) {
+      Logger.error("Error converting DateTime: $e");
+      return "";
+    }
+  }
+
+  // 27-08-2023 18:00 -> 2023-08-27T20:00:00+02:00
+  static String convertDateTimeToDbDateTime(String input) {
+    try {
+      List<String> parts = input.split(' ');
+      if (parts.length != 2) {
+        throw Exception("Invalid input format");
+      }
+
+      List<String> dateParts = parts[0].split('-');
+      if (dateParts.length != 3) {
+        throw Exception("Invalid input format");
+      }
+
+      List<String> timeParts = parts[1].split(':');
+      if (timeParts.length != 2) {
+        throw Exception("Invalid input format");
+      }
+
+      String formattedDate = "${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${timeParts[0]}:${timeParts[1]}:00+02:00";
+      return formattedDate;
+    } catch (e) {
+      Logger.error("Error converting DateTime: $e");
+      return "";
+    }
+  }
+
+  // 27-08-2023 18:00 -> 27-08-2023
+  static String getDateFromFormattedStringDDMMYYYYHHSS(String formattedDateTime) {
+    try {
+      DateTime dateTime = DateFormat("dd-MM-yyyy HH:mm").parse(formattedDateTime);
+      String formattedDate = DateFormat("dd-MM-yyyy").format(dateTime);
+      return formattedDate;
+    } catch (e) {
+      Logger.error("Error extracting date: $e");
+      return "";
+    }
+  }
+
+  // 27-08-2023 18:00 -> 18:00
+  static String getTimeFromFormattedStringDDMMYYYYHHSS(String formattedDateTime) {
+    try {
+      DateTime dateTime = DateFormat("dd-MM-yyyy HH:mm").parse(formattedDateTime);
+      String formattedTime = DateFormat("HH:mm").format(dateTime);
+      return formattedTime;
+    } catch (e) {
+      Logger.error("Error extracting time: $e");
+      return "";
+    }
+  }
+
+  // hello world -> Hello world
   static String capitalizeFirstLetter(String input) {
     if (input.isEmpty) {
       return input; // Return the input string as-is if it's empty

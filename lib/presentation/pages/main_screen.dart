@@ -6,7 +6,6 @@ import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/presentation/pages/pages.dart';
 import 'package:validator/presentation/styles/logger.dart';
-import 'package:validator/presentation/widgets/border_button.dart';
 import 'package:validator/presentation/widgets/button.dart';
 
 import '../../infrastructure/utilities/helpers.dart';

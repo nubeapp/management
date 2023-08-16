@@ -5,7 +5,6 @@ import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:validator/config/app_config.dart';
-import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/entities/ticket/ticket.dart';
 import 'package:validator/domain/entities/ticket/ticket_status.dart';
 import 'package:validator/domain/entities/ticket/ticket_summary.dart';

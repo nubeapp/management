@@ -4,13 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:validator/domain/entities/ticket/ticket.dart';
+import 'package:validator/domain/entities/ticket/ticket_navigation.dart';
 import 'package:validator/domain/entities/ticket/ticket_status.dart';
 import 'package:validator/domain/services/ticket_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
+import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/alert_empty_fields.dart';
 import 'package:validator/presentation/widgets/border_button.dart';
 import 'package:validator/presentation/widgets/button.dart';
+import 'package:validator/presentation/widgets/custom_toast.dart';
 import 'package:validator/presentation/widgets/label.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +28,15 @@ class TicketInfoScreen extends StatefulWidget {
 
 class _TicketInfoScreenState extends State<TicketInfoScreen> {
   final _ticketService = GetIt.instance<ITicketService>();
+  late Ticket _updatedTicket;
+  bool _isLoading = false;
+  bool cancel = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _updatedTicket = widget.ticket;
+  }
 
   PreferredSizeWidget _customAppBar() => AppBar(
         backgroundColor: Colors.transparent,
@@ -43,7 +55,8 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
             color: Colors.black87,
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            final ticketNavigation = TicketNavigation(cancel: cancel);
+            Navigator.of(context).pop(ticketNavigation);
           },
         ),
         actions: [
@@ -54,8 +67,9 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
               onPressed: () async {
                 bool delete = await _showConfirmDialog();
                 if (delete) {
-                  await _ticketService.deleteTicketById(widget.ticket.id!);
-                  Navigator.of(context).pop(widget.ticket.id);
+                  await _ticketService.deleteTicketById(_updatedTicket.id!);
+                  final ticketNavigation = TicketNavigation(cancel: false, ticket: _updatedTicket);
+                  Navigator.of(context).pop(ticketNavigation);
                 }
               },
             ),
@@ -87,6 +101,47 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
     return result ?? false;
   }
 
+  Ticket _createCanceledTicket(Ticket originalTicket) {
+    return Ticket(
+      id: originalTicket.id,
+      reference: originalTicket.reference,
+      status: TicketStatus.CANCELED,
+      price: originalTicket.price,
+      event: originalTicket.event,
+      eventId: originalTicket.eventId,
+      order: originalTicket.order,
+      orderId: originalTicket.orderId,
+      user: originalTicket.user,
+      userId: originalTicket.userId,
+    );
+  }
+
+  String getStatusDateFromTicket(Ticket ticket) {
+    switch (ticket.status) {
+      case TicketStatus.SOLD:
+        return Helpers.formatString(Helpers.getDateFromFormattedStringDDMMYYYYHHSS(ticket.soldAt!));
+      case TicketStatus.VALIDATED:
+        return Helpers.formatString(Helpers.getDateFromFormattedStringDDMMYYYYHHSS(ticket.validatedAt!));
+      case TicketStatus.CANCELED:
+        return Helpers.formatString(Helpers.getDateFromFormattedStringDDMMYYYYHHSS(ticket.canceledAt!));
+      default:
+        return '';
+    }
+  }
+
+  String getStatusTimeFromTicket(Ticket ticket) {
+    switch (ticket.status) {
+      case TicketStatus.SOLD:
+        return Helpers.getTimeFromFormattedStringDDMMYYYYHHSS(ticket.soldAt!);
+      case TicketStatus.VALIDATED:
+        return Helpers.getTimeFromFormattedStringDDMMYYYYHHSS(ticket.validatedAt!);
+      case TicketStatus.CANCELED:
+        return Helpers.getTimeFromFormattedStringDDMMYYYYHHSS(ticket.canceledAt!);
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +152,7 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const LightLabel(label: 'Reference'),
-            Label(label: widget.ticket.reference),
+            Label(label: _updatedTicket.reference),
             SizedBox(height: context.h * 0.02),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,13 +164,15 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const LightLabel(label: 'Status'),
-                      Label(label: widget.ticket.status.name),
+                      Label(label: _updatedTicket.status.name),
                       SizedBox(height: context.h * 0.02),
-                      if (widget.ticket.user != null) const LightLabel(label: 'Name'),
-                      if (widget.ticket.user != null) Label(label: widget.ticket.user!.name),
-                      if (widget.ticket.user != null) SizedBox(height: context.h * 0.02),
-                      if (widget.ticket.status != TicketStatus.AVAILABLE) LightLabel(label: '${Helpers.capitalizeFirstLetter(widget.ticket.status.name)} date'),
-                      if (widget.ticket.status != TicketStatus.AVAILABLE) SizedBox(height: context.h * 0.02),
+                      if (_updatedTicket.user != null) const LightLabel(label: 'Name'),
+                      if (_updatedTicket.user != null) Label(label: _updatedTicket.user!.name),
+                      if (_updatedTicket.user != null) SizedBox(height: context.h * 0.02),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE)
+                        LightLabel(label: '${Helpers.capitalizeFirstLetter(_updatedTicket.status.name)} date'),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE) Label(label: getStatusDateFromTicket(_updatedTicket)),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE) SizedBox(height: context.h * 0.02),
                     ],
                   ),
                 ),
@@ -126,21 +183,59 @@ class _TicketInfoScreenState extends State<TicketInfoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const LightLabel(label: 'Price'),
-                      Label(
-                        label: NumberFormat.currency(
-                          symbol: '€ ',
-                          decimalDigits: 2, // Number of decimal places
-                        ).format(widget.ticket.price),
-                      ),
+                      Label(label: NumberFormat.currency(symbol: '€ ', decimalDigits: 2).format(_updatedTicket.price)),
                       SizedBox(height: context.h * 0.02),
-                      if (widget.ticket.user != null) const LightLabel(label: 'Surname'),
-                      if (widget.ticket.user != null) Label(label: widget.ticket.user!.surname)
+                      if (_updatedTicket.user != null) const LightLabel(label: 'Surname'),
+                      if (_updatedTicket.user != null) Label(label: _updatedTicket.user!.surname),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE) SizedBox(height: context.h * 0.02),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE)
+                        LightLabel(label: '${Helpers.capitalizeFirstLetter(_updatedTicket.status.name)} time'),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE) Label(label: getStatusTimeFromTicket(_updatedTicket)),
+                      if (_updatedTicket.status != TicketStatus.AVAILABLE) SizedBox(height: context.h * 0.02),
                     ],
                   ),
                 ),
               ],
             ),
-            Button.red(text: 'Cancel ticket', width: context.w * 0.35)
+            if (_updatedTicket.status == TicketStatus.AVAILABLE)
+              _isLoading
+                  ? const CircularProgressIndicator(color: Colors.black54)
+                  : Button.red(
+                      text: 'Cancel ticket',
+                      width: context.w * 0.35,
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        try {
+                          await Future.delayed(const Duration(milliseconds: 2000));
+                          await _ticketService.cancelTicket(_updatedTicket.id!);
+                          setState(() {
+                            _isLoading = false;
+                          });
+                          CustomToast.showToast(
+                              context: context,
+                              width: context.w * 0.75,
+                              message: 'Ticket has been cancelled',
+                              color: Colors.green.withOpacity(0.8),
+                              icon: CupertinoIcons.checkmark_alt_circle);
+                          _updatedTicket = _createCanceledTicket(_updatedTicket);
+                          cancel = true;
+                        } catch (e) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+
+                          CustomToast.showToast(
+                              context: context,
+                              width: context.w * 0.75,
+                              message: 'Failed to cancelled ticket',
+                              color: Colors.red.withOpacity(1),
+                              icon: CupertinoIcons.clear);
+                        }
+                      },
+                    ),
           ],
         ),
       ),

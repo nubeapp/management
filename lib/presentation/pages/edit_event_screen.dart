@@ -6,8 +6,10 @@ import 'package:get_it/get_it.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
+import 'package:validator/domain/services/ticket_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
+import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/alert_empty_fields.dart';
 import 'package:validator/presentation/widgets/border_button.dart';
 import 'package:validator/presentation/widgets/button.dart';
@@ -34,6 +36,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
   final TextEditingController _venueController = TextEditingController();
   late Organization _organizationSelected;
   final IEventService _eventService = GetIt.instance<IEventService>();
+  final ITicketService _ticketService = GetIt.instance<ITicketService>();
   bool _isLoading = false;
 
   void _showCalendar() async {
@@ -163,11 +166,15 @@ class _EditEventScreenState extends State<EditEventScreen> {
               child: BorderButton.delete(
                 width: context.w * 0.1,
                 onPressed: () async {
-                  // show dialog
                   bool delete = await _showConfirmDialog();
                   if (delete) {
-                    await _eventService.deleteEventById(widget.event.id!);
-                    Navigator.of(context).pop();
+                    try {
+                      await _eventService.deleteEventById(widget.event.id!);
+                      await _ticketService.deleteTicketsByEventId(widget.event.id!);
+                      Navigator.of(context).pop();
+                    } catch (e) {
+                      Logger.error('Failed to delete event and tickets. Exception: $e');
+                    }
                   }
                 },
               ),

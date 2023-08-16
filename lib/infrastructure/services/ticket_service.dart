@@ -137,6 +137,27 @@ class TicketService implements ITicketService {
   }
 
   @override
+  Future<void> cancelTicket(int ticketId) async {
+    try {
+      Logger.debug('Canceling ticket with id $ticketId...');
+      final response = await client.put(
+        Uri.parse('$API_BASE_URL/cancel/$ticketId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Logger.info('Ticket have been updated successfully!');
+      } else {
+        throw Exception('Failed to update tickets');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> deleteTicketById(int ticketId) async {
     try {
       Logger.debug('Deleting ticket with id $ticketId...');

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:validator/domain/entities/event.dart';
+import 'package:validator/domain/entities/ticket/ticket_navigation.dart';
 import 'package:validator/domain/entities/ticket/ticket_summary.dart';
 import 'package:validator/domain/entities/ticket/ticket.dart';
 import 'package:validator/domain/services/ticket_service_interface.dart';
@@ -69,7 +70,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
   void _updateListView(String searchText) {
     final filteredTickets = _tickets.where((ticket) {
-      bool matchesSearchText = ticket.reference.startsWith(searchText);
+      bool matchesSearchText = ticket.reference.startsWith(searchText.toUpperCase());
       bool matchesStatus = _selectedStatus == 'ALL' || ticket.status.name == _selectedStatus;
 
       return matchesSearchText && matchesStatus;
@@ -88,10 +89,11 @@ class _TicketsScreenState extends State<TicketsScreen> {
   }
 
   // Callback function to update the state in the parent widget
-  void updateState({required int ticketId}) {
+  void updateState({required int ticketId}) async {
     _tickets.removeWhere((ticket) => ticket.id == ticketId);
     _filteredTickets.removeWhere((ticket) => ticket.id == ticketId);
     setState(() {});
+    // await _fetchTickets();
   }
 
   PreferredSizeWidget _customAppBar() => AppBar(
@@ -143,6 +145,11 @@ class _TicketsScreenState extends State<TicketsScreen> {
               ),
             ),
             TicketStatusDropdown(onStatusSelected: _onStatusSelected),
+            SizedBox(height: context.h * 0.02),
+            Text(
+              '${_filteredTickets.length.toString()} results have been found',
+              style: const TextStyle(color: Colors.black38, fontSize: 16, fontWeight: FontWeight.w500),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: Row(
@@ -167,14 +174,23 @@ class _TicketsScreenState extends State<TicketsScreen> {
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),
-                    onTap: () => Navigator.of(context)
-                        .push(MaterialPageRoute(
-                          settings: const RouteSettings(name: '/ticket_info_screen'),
-                          builder: (context) => TicketInfoScreen(
-                            ticket: _filteredTickets[index],
-                          ),
-                        ))
-                        .then((id) => updateState(ticketId: id)),
+                    onTap: () async {
+                      final navigationResult = await Navigator.of(context).push(MaterialPageRoute(
+                        settings: const RouteSettings(name: '/ticket_info_screen'),
+                        builder: (context) => TicketInfoScreen(
+                          ticket: _filteredTickets[index],
+                        ),
+                      ));
+
+                      if (navigationResult is TicketNavigation) {
+                        if (navigationResult.ticket != null) {
+                          updateState(ticketId: navigationResult.ticket!.id!);
+                        }
+                        if (navigationResult.cancel) {
+                          _fetchTickets();
+                        }
+                      }
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                       child: Row(
