@@ -325,7 +325,7 @@ class _EventCardState extends State<EventCard> {
                               width: context.w * 0.27,
                               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                                 settings: const RouteSettings(name: '/tickets_screen'),
-                                builder: (context) => TicketsScreen(event: widget.event),
+                                builder: (context) => TicketsPaginationScreen(event: widget.event),
                               )),
                             ),
                           ],

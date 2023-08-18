@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/entities/ticket/ticket_navigation.dart';
+import 'package:validator/domain/entities/ticket/ticket_status.dart';
 import 'package:validator/domain/entities/ticket/ticket_summary.dart';
 import 'package:validator/domain/entities/ticket/ticket.dart';
 import 'package:validator/domain/services/ticket_service_interface.dart';
@@ -13,6 +14,7 @@ import 'package:validator/presentation/pages/pages.dart';
 import 'package:validator/presentation/styles/logger.dart';
 import 'package:validator/presentation/widgets/input_field.dart';
 import 'package:validator/presentation/widgets/label.dart';
+import 'package:validator/presentation/widgets/status_label.dart';
 import 'package:validator/presentation/widgets/ticket_status_dropdown.dart';
 
 class TicketsScreen extends StatefulWidget {
@@ -53,10 +55,10 @@ class _TicketsScreenState extends State<TicketsScreen> {
 
   Future<void> _fetchTickets() async {
     try {
-      final TicketSummary ticketSummary = await _ticketService.getTicketsByEventId(widget.event.id!);
+      final TicketSummary ticketSummary = await _ticketService.getTicketsByEventId(eventId: widget.event.id!, limit: 100, offset: 0);
       setState(() {
         _tickets = ticketSummary.tickets;
-        _updateListView(_searchController.text); // Update the filtered list based on the initial searchText
+        _updateListView(_searchController.text);
       });
     } catch (e) {
       // Handle error
@@ -94,6 +96,25 @@ class _TicketsScreenState extends State<TicketsScreen> {
     _filteredTickets.removeWhere((ticket) => ticket.id == ticketId);
     setState(() {});
     // await _fetchTickets();
+  }
+
+  StatusLabel getStatusLabelFromTicketStatus(Ticket ticket) {
+    switch (ticket.status) {
+      case TicketStatus.AVAILABLE:
+        return StatusLabel.available();
+      case TicketStatus.SOLD:
+        return StatusLabel.sold();
+      case TicketStatus.VALIDATED:
+        return const StatusLabel.validated();
+      case TicketStatus.CANCELED:
+        return const StatusLabel.canceled();
+      default:
+        return const StatusLabel(
+          status: 'Not found',
+          color: Colors.orange,
+          textColor: Colors.white70,
+        );
+    }
   }
 
   PreferredSizeWidget _customAppBar() => AppBar(
@@ -150,17 +171,18 @@ class _TicketsScreenState extends State<TicketsScreen> {
               '${_filteredTickets.length.toString()} results have been found',
               style: const TextStyle(color: Colors.black38, fontSize: 16, fontWeight: FontWeight.w500),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Label(label: 'Reference'),
-                  SizedBox(width: context.w * 0.39),
-                  const Label(label: 'Status'),
-                ],
+            if (_filteredTickets.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Label(label: 'Reference'),
+                    SizedBox(width: context.w * 0.36),
+                    const Label(label: 'Status'),
+                  ],
+                ),
               ),
-            ),
             Expanded(
               child: ListView.separated(
                 itemCount: _filteredTickets.length,
@@ -196,7 +218,7 @@ class _TicketsScreenState extends State<TicketsScreen> {
                       child: Row(
                         children: [
                           Container(
-                            width: context.w * 0.55,
+                            width: context.w * 0.5,
                             alignment: Alignment.centerLeft,
                             child: Text(
                               _filteredTickets[index].reference,
@@ -208,18 +230,10 @@ class _TicketsScreenState extends State<TicketsScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(width: context.w * 0.02),
                           Container(
-                            width: context.w * 0.26,
+                            width: context.w * 0.33,
                             alignment: Alignment.center,
-                            child: Text(
-                              _filteredTickets[index].status.name,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black.withOpacity(0.65),
-                              ),
-                            ),
+                            child: getStatusLabelFromTicketStatus(_filteredTickets[index]),
                           ),
                         ],
                       ),

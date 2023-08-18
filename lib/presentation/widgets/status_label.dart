@@ -17,7 +17,7 @@ class StatusLabel extends StatelessWidget {
         status = 'SOLD';
   const StatusLabel.validated({super.key})
       : color = Colors.green,
-        textColor = Colors.black87,
+        textColor = Colors.white,
         status = 'VALIDATED';
   const StatusLabel.canceled({super.key})
       : color = Colors.red,
@@ -34,7 +34,7 @@ class StatusLabel extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           child: Text(
             status,
-            style: TextStyle(color: textColor, fontWeight: FontWeight.w700, fontSize: 16, letterSpacing: 1),
+            style: TextStyle(color: textColor, fontWeight: FontWeight.w700, fontSize: 14, letterSpacing: 1),
           ),
         ),
       ),

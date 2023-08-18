@@ -4,7 +4,6 @@ import 'package:validator/domain/entities/order.dart';
 import 'package:validator/domain/entities/ticket/ticket_status.dart';
 import 'package:validator/domain/entities/user.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/styles/logger.dart';
 
 @immutable
 class Ticket {
@@ -18,6 +17,7 @@ class Ticket {
   final Event? event;
   final User? user;
   final Order? order;
+  final String? createdAt;
   final String? soldAt;
   final String? validatedAt;
   final String? canceledAt;
@@ -33,6 +33,7 @@ class Ticket {
     this.event,
     this.user,
     this.order,
+    this.createdAt,
     this.soldAt,
     this.validatedAt,
     this.canceledAt,
@@ -49,6 +50,7 @@ class Ticket {
       ),
       event: json['event'] != null ? Event.fromJson(json['event']) : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
+      createdAt: json['created_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['created_at']) : null,
       soldAt: json['sold_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['sold_at']) : null,
       validatedAt: json['validated_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['validated_at']) : null,
       canceledAt: json['canceled_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['canceled_at']) : null,

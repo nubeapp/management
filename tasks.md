@@ -22,3 +22,6 @@
 - (P3) 'Add tickets' feature
 - (P2) Show TicketStatus history, with StatusLabel, Date and Time
 - (P2) Add new feature of EventStatus (INCOMING, IN PROGRESS, FINISHED, CANCELED), and if some event is canceled, cancel all their tickets. Also, dont let buy new tickets if the event is 'IN PROGRESS' or 'FINISHED' or 'CANCELED'
+- (P3) Support request access by email -> Need a new table that stores the user_id that requested the access
+- (P1) Pagination in ticket filter -> Make an API call when typing something in searcher (with a debounce time of 500ms) ✅
+- (P2) New table of ticket_status_history (ticket_id, status, status_datetime)

@@ -170,7 +170,6 @@ class _EditEventScreenState extends State<EditEventScreen> {
                   if (delete) {
                     try {
                       await _eventService.deleteEventById(widget.event.id!);
-                      await _ticketService.deleteTicketsByEventId(widget.event.id!);
                       Navigator.of(context).pop();
                     } catch (e) {
                       Logger.error('Failed to delete event and tickets. Exception: $e');

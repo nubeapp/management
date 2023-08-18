@@ -69,9 +69,12 @@ class TicketService implements ITicketService {
   }
 
   @override
-  Future<TicketSummary> getTicketsByEventId(int eventId) async {
+  Future<TicketSummary> getTicketsByEventId({required int eventId, required int limit, required int offset, String? status, String? filter}) async {
+    String url = '$API_BASE_URL/$eventId?limit=$limit&offset=$offset';
+    if (status != null) url += '&status=$status';
+    if (filter != null) url += '&filter=$filter';
     try {
-      final response = await client.get(Uri.parse('$API_BASE_URL/$eventId'));
+      final response = await client.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         Logger.info('Tickets for event $eventId have been retrieved successfully!');
