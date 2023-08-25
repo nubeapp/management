@@ -18,9 +18,6 @@ class Ticket {
   final User? user;
   final Order? order;
   final String? createdAt;
-  final String? soldAt;
-  final String? validatedAt;
-  final String? canceledAt;
 
   const Ticket({
     this.id,
@@ -34,9 +31,6 @@ class Ticket {
     this.user,
     this.order,
     this.createdAt,
-    this.soldAt,
-    this.validatedAt,
-    this.canceledAt,
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
@@ -51,9 +45,6 @@ class Ticket {
       event: json['event'] != null ? Event.fromJson(json['event']) : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
       createdAt: json['created_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['created_at']) : null,
-      soldAt: json['sold_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['sold_at']) : null,
-      validatedAt: json['validated_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['validated_at']) : null,
-      canceledAt: json['canceled_at'] != null ? Helpers.convertDbDateTimeToDateTime(json['canceled_at']) : null,
     );
   }
 

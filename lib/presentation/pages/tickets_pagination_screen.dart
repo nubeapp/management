@@ -6,15 +6,15 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/entities/ticket/ticket.dart';
-import 'package:validator/domain/entities/ticket/ticket_status.dart';
 import 'package:validator/domain/entities/ticket/ticket_summary.dart';
 import 'package:validator/domain/services/ticket_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
+import 'package:validator/infrastructure/utilities/helpers.dart';
 import 'package:validator/presentation/pages/pages.dart';
 import 'package:validator/presentation/styles/logger.dart';
+import 'package:validator/presentation/widgets/custom_app_bar.dart';
 import 'package:validator/presentation/widgets/input_field.dart';
 import 'package:validator/presentation/widgets/label.dart';
-import 'package:validator/presentation/widgets/status_label.dart';
 import 'package:validator/presentation/widgets/ticket_status_dropdown.dart';
 
 class TicketsPaginationScreen extends StatefulWidget {
@@ -104,7 +104,6 @@ class _TicketsPaginationScreenState extends State<TicketsPaginationScreen> {
   }
 
   void _scrollListener() {
-    // Check if the user has reached the bottom of the scroll
     if (_scrollController.offset >= _scrollController.position.maxScrollExtent - 30 && !_scrollController.position.outOfRange) {
       if (_ticketsRemaining) {
         _fetchMoreTickets();
@@ -160,32 +159,15 @@ class _TicketsPaginationScreenState extends State<TicketsPaginationScreen> {
     });
   }
 
-  PreferredSizeWidget _customAppBar() => AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Tickets',
-          style: TextStyle(color: Colors.black87),
-        ),
-        leading: IconButton(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          padding: const EdgeInsets.only(left: 16),
-          icon: const Icon(
-            CupertinoIcons.left_chevron,
-            size: 26,
-            color: Colors.black87,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      );
+  void _updateStateAfterPop() {
+    _searchController.text = '';
+    _onStatusSelected(_selectedStatus);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _customAppBar(),
+      appBar: CustomAppBar.pop(context: context, title: 'Tickets'),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -214,42 +196,32 @@ class _TicketsPaginationScreenState extends State<TicketsPaginationScreen> {
               '$_count results have been found',
               style: const TextStyle(color: Colors.black38, fontSize: 16, fontWeight: FontWeight.w500),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Label(label: 'Reference'),
-                  SizedBox(width: context.w * 0.36),
-                  const Label(label: 'Status'),
-                ],
-              ),
-            ),
+            if (_count > 0) const HeaderTicketsListView(),
             FutureBuilder<TicketSummary>(
               future: _tickets,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final ticketSummary = snapshot.data!;
                   if (ticketSummary.tickets.isNotEmpty) {
-                    return Expanded(child: TicketsListView(tickets: ticketSummary.tickets, scrollController: _scrollController));
-                  } else {
-                    return const Center(
-                      child: Text(
-                        '☹️ There are no tickets...',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    return Expanded(
+                      child: TicketsListView(
+                        tickets: ticketSummary.tickets,
+                        scrollController: _scrollController,
+                        updateState: _updateStateAfterPop,
                       ),
                     );
+                  } else {
+                    return const SizedBox();
                   }
                 } else if (snapshot.hasError) {
                   return const Center(
                     child: Text('Error fetching tickets'),
                   );
                 } else {
-                  return const CircularProgressIndicator(color: Colors.black87);
+                  return Padding(
+                    padding: EdgeInsets.only(top: context.h * 0.2),
+                    child: const CircularProgressIndicator(color: Colors.black87),
+                  );
                 }
               },
             ),
@@ -260,38 +232,42 @@ class _TicketsPaginationScreenState extends State<TicketsPaginationScreen> {
   }
 }
 
+class HeaderTicketsListView extends StatelessWidget {
+  const HeaderTicketsListView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Label(label: 'Reference'),
+          SizedBox(width: context.w * 0.36),
+          const Label(label: 'Status'),
+        ],
+      ),
+    );
+  }
+}
+
 class TicketsListView extends StatelessWidget {
   const TicketsListView({
     Key? key,
     required this.tickets,
     required this.scrollController,
+    required this.updateState,
   }) : super(key: key);
 
   final List<Ticket> tickets;
   final ScrollController scrollController;
-
-  StatusLabel getStatusLabelFromTicketStatus(Ticket ticket) {
-    switch (ticket.status) {
-      case TicketStatus.AVAILABLE:
-        return StatusLabel.available();
-      case TicketStatus.SOLD:
-        return StatusLabel.sold();
-      case TicketStatus.VALIDATED:
-        return const StatusLabel.validated();
-      case TicketStatus.CANCELED:
-        return const StatusLabel.canceled();
-      default:
-        return const StatusLabel(
-          status: 'Not found',
-          color: Colors.orange,
-          textColor: Colors.white70,
-        );
-    }
-  }
+  final VoidCallback updateState;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: context.w,
       height: context.h * 0.7,
       child: ListView.separated(
@@ -308,21 +284,15 @@ class TicketsListView extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(10),
             onTap: () async {
-              final navigationResult = await Navigator.of(context).push(MaterialPageRoute(
+              final bool result = await Navigator.of(context).push(MaterialPageRoute(
                 settings: const RouteSettings(name: '/ticket_info_screen'),
                 builder: (context) => TicketInfoScreen(
                   ticket: tickets[index],
                 ),
               ));
-
-              // if (navigationResult is TicketNavigation) {
-              //   if (navigationResult.ticket != null) {
-              //     updateState(ticketId: navigationResult.ticket!.id!);
-              //   }
-              //   if (navigationResult.cancel) {
-              //     _fetchTickets();
-              //   }
-              // }
+              if (result) {
+                updateState();
+              }
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -344,7 +314,7 @@ class TicketsListView extends StatelessWidget {
                   Container(
                     width: context.w * 0.33,
                     alignment: Alignment.center,
-                    child: getStatusLabelFromTicketStatus(tickets[index]),
+                    child: Helpers.getStatusLabelFromTicketStatus(tickets[index].status),
                   ),
                 ],
               ),

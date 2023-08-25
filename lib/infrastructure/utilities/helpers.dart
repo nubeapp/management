@@ -1,5 +1,14 @@
+import 'dart:ui';
+
 import 'package:intl/intl.dart';
+import 'package:validator/domain/entities/ticket/ticket_status.dart';
+import 'package:validator/extensions/extensions.dart';
 import 'package:validator/presentation/styles/logger.dart';
+import 'package:validator/presentation/widgets/alert_empty_fields.dart';
+import 'package:validator/presentation/widgets/calendar.dart';
+import 'package:validator/presentation/widgets/status_label.dart';
+import 'package:flutter/material.dart';
+import 'package:validator/presentation/widgets/time_picker.dart';
 
 abstract class Helpers {
   static String dateStringToWeekday(String dateString) {
@@ -282,5 +291,100 @@ abstract class Helpers {
       return input; // Return the input string as-is if it's empty
     }
     return input[0].toUpperCase() + input.substring(1).toLowerCase();
+  }
+
+  // TicketStatus -> StatusLabel
+  static StatusLabel getStatusLabelFromTicketStatus(TicketStatus status) {
+    switch (status) {
+      case TicketStatus.AVAILABLE:
+        return StatusLabel.available();
+      case TicketStatus.SOLD:
+        return StatusLabel.sold();
+      case TicketStatus.VALIDATED:
+        return const StatusLabel.validated();
+      case TicketStatus.CANCELED:
+        return const StatusLabel.canceled();
+      default:
+        return const StatusLabel(
+          status: 'Not found',
+          color: Colors.orange,
+          textColor: Colors.white70,
+        );
+    }
+  }
+
+  // 10.0 -> € 10.00
+  static String doubleToEuroFormat(double value) {
+    return NumberFormat.currency(symbol: '€ ', decimalDigits: 2).format(value);
+  }
+
+  static Future<bool> showConfirmDialog({required BuildContext context, required String element}) async {
+    final bool? result = await showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.3),
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Center(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                width: context.w * 0.9,
+                height: context.h * 0.24,
+                child: AlertConfirmDialog(element: element),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    return result ?? false;
+  }
+
+  static Future<String?> showCalendar({required BuildContext context, required int year, required int month, required int day}) async {
+    return await showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.3),
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Center(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                width: context.w * 0.9,
+                height: context.h * 0.5,
+                child: Calendar(year: year, month: month, day: day),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<String?> showTimePicker({required BuildContext context, required String selectedHour}) async {
+    return await showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.3),
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Center(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                width: context.w * 0.9,
+                height: context.h * 0.48,
+                child: TimePicker(selectedHour: selectedHour),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

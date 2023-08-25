@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -9,12 +7,11 @@ import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
 import 'package:validator/presentation/widgets/button.dart';
-import 'package:validator/presentation/widgets/calendar.dart';
+import 'package:validator/presentation/widgets/custom_app_bar.dart';
 import 'package:validator/presentation/widgets/custom_toast.dart';
 import 'package:validator/presentation/widgets/input_field.dart';
 import 'package:validator/presentation/widgets/label.dart';
 import 'package:validator/presentation/widgets/organization_dropdown.dart';
-import 'package:validator/presentation/widgets/time_picker.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});
@@ -33,31 +30,12 @@ class _AddEventScreenState extends State<AddEventScreen> {
   bool _isLoading = false;
   final List<List<TextEditingController>> _controllerRows = [];
 
-  void _showCalendar() async {
+  void _showCalendarDialog() async {
     DateTime today = DateTime.now();
     int year = today.year;
     int month = today.month;
     int day = today.day;
-    final String? result = await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: context.w * 0.9,
-                height: context.h * 0.5,
-                child: Calendar(year: year, month: month, day: day),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    final String? result = await Helpers.showCalendar(context: context, year: year, month: month, day: day);
 
     if (result != null) {
       _dateController.text = result;
@@ -65,28 +43,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   void _showTimePicker() async {
-    final String? result = await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: context.w * 0.9,
-                height: context.h * 0.48,
-                child: TimePicker(
-                  selectedHour: _timeController.text,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    final String? result = await Helpers.showTimePicker(context: context, selectedHour: _timeController.text);
 
     if (result != null) {
       _timeController.text = result;
@@ -135,30 +92,9 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    PreferredSizeWidget customAppBar() => AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text(
-            'Add event',
-            style: TextStyle(color: Colors.black87),
-          ),
-          leading: IconButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            padding: const EdgeInsets.only(left: 16),
-            icon: const Icon(
-              CupertinoIcons.left_chevron,
-              size: 26,
-              color: Colors.black87,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        );
     return FocusScope(
       child: Scaffold(
-        appBar: customAppBar(),
+        appBar: CustomAppBar.pop(context: context, title: 'Add event'),
         body: SizedBox(
           // color: Colors.redAccent,
           width: context.w,
@@ -184,7 +120,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                         children: [
                           const Label(label: 'Date'),
                           GestureDetector(
-                            onTap: () => _showCalendar(),
+                            onTap: () => _showCalendarDialog(),
                             child: SizedBox(
                               width: context.w * 0.47,
                               child: InputField.disabled(
@@ -260,7 +196,6 @@ class _AddEventScreenState extends State<AddEventScreen> {
                                   organizationId: _organizationSelected!.id,
                                 );
                                 try {
-                                  // await Future.delayed(const Duration(milliseconds: 2000));
                                   await _eventService.createEvent(event);
                                   setState(() {
                                     _isLoading = false;

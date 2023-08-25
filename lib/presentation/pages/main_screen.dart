@@ -22,45 +22,45 @@ class _MainScreenState extends State<MainScreen> {
 
   final _eventService = GetIt.instance<IEventService>();
 
-  // Callback function to update the state in the parent widget
   void updateState() {
     setState(() {});
   }
 
+  PreferredSizeWidget _customAppBar() => AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          padding: const EdgeInsets.only(left: 16),
+          icon: const Icon(
+            CupertinoIcons.person,
+            size: 26,
+            color: Colors.black87,
+          ),
+          onPressed: () {
+            Logger.debug('profile');
+          },
+        ),
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Button.black(
+            text: 'Add event',
+            width: context.w * 0.3,
+            onPressed: () => Navigator.of(context)
+                .push(MaterialPageRoute(
+                  settings: const RouteSettings(name: '/add_event_screen'),
+                  builder: (context) => const AddEventScreen(),
+                ))
+                .then((_) => updateState()),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
-    PreferredSizeWidget customAppBar() => AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            padding: const EdgeInsets.only(left: 16),
-            icon: const Icon(
-              CupertinoIcons.person,
-              size: 26,
-              color: Colors.black87,
-            ),
-            onPressed: () {
-              Logger.debug('profile');
-            },
-          ),
-          title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Button.black(
-              text: 'Add event',
-              width: context.w * 0.3,
-              onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(
-                    settings: const RouteSettings(name: '/add_event_screen'),
-                    builder: (context) => const AddEventScreen(),
-                  ))
-                  .then((_) => updateState()),
-            ),
-          ),
-        );
     return Scaffold(
-      appBar: customAppBar(),
+      appBar: _customAppBar(),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: FutureBuilder<List<Event>>(

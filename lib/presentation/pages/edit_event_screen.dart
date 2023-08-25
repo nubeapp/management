@@ -1,24 +1,18 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
-import 'package:validator/domain/services/ticket_service_interface.dart';
 import 'package:validator/extensions/extensions.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
 import 'package:validator/presentation/styles/logger.dart';
-import 'package:validator/presentation/widgets/alert_empty_fields.dart';
-import 'package:validator/presentation/widgets/border_button.dart';
 import 'package:validator/presentation/widgets/button.dart';
-import 'package:validator/presentation/widgets/calendar.dart';
+import 'package:validator/presentation/widgets/custom_app_bar.dart';
 import 'package:validator/presentation/widgets/custom_toast.dart';
 import 'package:validator/presentation/widgets/input_field.dart';
 import 'package:validator/presentation/widgets/label.dart';
 import 'package:validator/presentation/widgets/organization_dropdown.dart';
-import 'package:validator/presentation/widgets/time_picker.dart';
 
 class EditEventScreen extends StatefulWidget {
   const EditEventScreen({required this.event, super.key});
@@ -36,33 +30,13 @@ class _EditEventScreenState extends State<EditEventScreen> {
   final TextEditingController _venueController = TextEditingController();
   late Organization _organizationSelected;
   final IEventService _eventService = GetIt.instance<IEventService>();
-  final ITicketService _ticketService = GetIt.instance<ITicketService>();
   bool _isLoading = false;
 
-  void _showCalendar() async {
+  void _showCalendarDialog() async {
     int year = Helpers.getYear(_dateController.text);
     int month = Helpers.getMonth(_dateController.text);
     int day = Helpers.getDay(_dateController.text);
-    final String? result = await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: context.w * 0.9,
-                height: context.h * 0.5,
-                child: Calendar(year: year, month: month, day: day),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    final String? result = await Helpers.showCalendar(context: context, year: year, month: month, day: day);
 
     if (result != null) {
       _dateController.text = result;
@@ -70,56 +44,11 @@ class _EditEventScreenState extends State<EditEventScreen> {
   }
 
   void _showTimePicker() async {
-    final String? result = await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: context.w * 0.9,
-                height: context.h * 0.48,
-                child: TimePicker(
-                  selectedHour: _timeController.text,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    final String? result = await Helpers.showTimePicker(context: context, selectedHour: _timeController.text);
 
     if (result != null) {
       _timeController.text = result;
     }
-  }
-
-  Future<bool> _showConfirmDialog() async {
-    final bool? result = await showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Center(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                width: context.w * 0.9,
-                height: context.h * 0.24,
-                child: const AlertConfirmDialog(element: 'event'),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-    return result ?? false;
   }
 
   void _onOrganizationSelected(Organization organization) {
@@ -138,51 +67,23 @@ class _EditEventScreenState extends State<EditEventScreen> {
     _organizationSelected = widget.event.organization!;
   }
 
+  Future<void> _deleteEvent() async {
+    bool delete = await Helpers.showConfirmDialog(context: context, element: 'event');
+    if (delete) {
+      try {
+        await _eventService.deleteEventById(widget.event.id!);
+        Navigator.of(context).pop();
+      } catch (e) {
+        Logger.error('Failed to delete event and tickets. Exception: $e');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    PreferredSizeWidget customAppBar() => AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text(
-            'Edit event',
-            style: TextStyle(color: Colors.black87),
-          ),
-          leading: IconButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            padding: const EdgeInsets.only(left: 16),
-            icon: const Icon(
-              CupertinoIcons.left_chevron,
-              size: 26,
-              color: Colors.black87,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: BorderButton.delete(
-                width: context.w * 0.1,
-                onPressed: () async {
-                  bool delete = await _showConfirmDialog();
-                  if (delete) {
-                    try {
-                      await _eventService.deleteEventById(widget.event.id!);
-                      Navigator.of(context).pop();
-                    } catch (e) {
-                      Logger.error('Failed to delete event and tickets. Exception: $e');
-                    }
-                  }
-                },
-              ),
-            ),
-          ],
-        );
     return FocusScope(
       child: Scaffold(
-        appBar: customAppBar(),
+        appBar: CustomAppBar.popDelete(context: context, title: 'Edit event', actionOnPressed: () async => await _deleteEvent()),
         body: SizedBox(
           // color: Colors.redAccent,
           width: context.w,
@@ -208,7 +109,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
                         children: [
                           const Label(label: 'Date'),
                           GestureDetector(
-                            onTap: () => _showCalendar(),
+                            onTap: () => _showCalendarDialog(),
                             child: SizedBox(
                               width: context.w * 0.47,
                               child: InputField.disabled(
@@ -287,7 +188,6 @@ class _EditEventScreenState extends State<EditEventScreen> {
                                   );
 
                                   try {
-                                    // await Future.delayed(const Duration(milliseconds: 2000));
                                     await _eventService.updateEventById(widget.event.id!, updatedEvent);
                                     setState(() {
                                       _isLoading = false;

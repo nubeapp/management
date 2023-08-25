@@ -142,12 +142,14 @@ void main() {
         final mockClient = MockClient();
         ticketService = TicketService(client: mockClient);
         int mockEventId = 1;
+        int limit = 2;
+        int offset = 0;
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).thenAnswer(
           (_) async => http.Response(json.encode(mockTicketSummaryResponse), 200),
         );
 
-        final ticketSummary = await ticketService.getTicketsByEventId(mockEventId);
+        final ticketSummary = await ticketService.getTicketsByEventId(eventId: mockEventId, limit: limit, offset: offset);
         List<Ticket> tickets = ticketSummary.tickets;
 
         expect(ticketSummary, isA<TicketSummary>());
@@ -176,10 +178,12 @@ void main() {
         final mockClient = MockClient();
         ticketService = TicketService(client: mockClient);
         int mockEventId = 1;
+        int limit = 2;
+        int offset = 0;
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(ticketService.getTicketsByEventId(mockEventId), throwsException);
+        expect(ticketService.getTicketsByEventId(eventId: mockEventId, limit: limit, offset: offset), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).called(1);
       });
