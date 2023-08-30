@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:validator/infrastructure/services/validation_service.dart';
 
 import '../../../mocks/mock_objects.dart';
-import 'validation_service_test.mocks.dart';
+import 'validation_service_unit_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {

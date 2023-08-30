@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:validator/domain/entities/token.dart';
@@ -12,7 +13,7 @@ class TokenInterceptor extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
+    final sharedPreferences = GetIt.instance<SharedPreferences>();
     if (sharedPreferences.containsKey('token')) {
       final String? strToken = sharedPreferences.getString('token');
       Token token = Token.fromJson(json.decode(strToken ?? ''));

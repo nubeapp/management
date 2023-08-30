@@ -13,7 +13,7 @@ import 'package:validator/infrastructure/services/ticket_service.dart';
 
 import '../../../mocks/mock_objects.dart';
 import '../../../mocks/mock_responses.dart';
-import 'ticket_service_test.mocks.dart';
+import 'ticket_service_unit_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {

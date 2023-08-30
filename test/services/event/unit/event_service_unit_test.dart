@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../mocks/mock_objects.dart';
 import '../../../mocks/mock_responses.dart';
-import 'event_service_test.mocks.dart';
+import 'event_service_unit_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {

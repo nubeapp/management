@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:validator/domain/services/api_service_interface.dart';
 import 'package:validator/domain/services/auth_service_interface.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
@@ -20,6 +21,8 @@ import 'package:validator/infrastructure/services/validation_service.dart';
 @immutable
 abstract class Dependencies {
   static void injectDependencies() async {
+    GetIt.instance.registerSingleton<SharedPreferences>(await SharedPreferences.getInstance());
+
     GetIt.instance.registerLazySingleton<http.Client>(() => HttpClientFactory.create());
 
     GetIt.instance.registerLazySingleton<IApiService>(

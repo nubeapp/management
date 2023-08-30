@@ -11,7 +11,7 @@ import 'package:validator/infrastructure/services/auth_service.dart';
 
 import '../../../mocks/mock_objects.dart';
 import '../../../mocks/mock_responses.dart';
-import 'auth_service_test.mocks.dart';
+import 'auth_service_unit_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {

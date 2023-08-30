@@ -10,7 +10,7 @@ import 'package:validator/domain/services/organization_service_interface.dart';
 import 'package:validator/infrastructure/services/organization_service.dart';
 import '../../../mocks/mock_objects.dart';
 import '../../../mocks/mock_responses.dart';
-import 'organization_service_test.mocks.dart';
+import 'organization_service_unit_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {

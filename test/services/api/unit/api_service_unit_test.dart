@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:validator/config/app_config.dart';
 import 'package:validator/infrastructure/services/api_service.dart';
 
-import 'api_service_test.mocks.dart';
+import 'api_service_unit_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
