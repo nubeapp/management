@@ -3,6 +3,7 @@ import 'package:validator/application/services/dependency_injection/dependencies
 import 'package:validator/presentation/pages/pages.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   Dependencies.injectDependencies();
   runApp(const MyApp());
 }

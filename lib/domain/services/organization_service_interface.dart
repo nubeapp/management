@@ -6,4 +6,5 @@ abstract class IOrganizationService {
   Future<List<Organization>> getOrganizations();
   Future<Organization> getOrganizationById(int organizationId);
   Future<Organization> createOrganization(Organization organization);
+  Future<void> deleteOrganizations();
 }

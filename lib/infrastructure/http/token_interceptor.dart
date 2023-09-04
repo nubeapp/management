@@ -13,11 +13,11 @@ class TokenInterceptor extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final sharedPreferences = GetIt.instance<SharedPreferences>();
-    if (sharedPreferences.containsKey('token')) {
-      final String? strToken = sharedPreferences.getString('token');
-      Token token = Token.fromJson(json.decode(strToken ?? ''));
-      if (!_requiresTokenAuthentication(request.url.toString())) {
+    if (!_requiresTokenAuthentication(request.url.toString())) {
+      final sharedPreferences = GetIt.instance<SharedPreferences>();
+      if (sharedPreferences.containsKey('token')) {
+        final String? strToken = sharedPreferences.getString('token');
+        Token token = Token.fromJson(json.decode(strToken ?? ''));
         request.headers['Authorization'] = 'Bearer ${token.accessToken}';
       }
     }

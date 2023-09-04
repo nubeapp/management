@@ -25,3 +25,9 @@
 - (P3) Support request access by email -> Need a new table that stores the user_id that requested the access
 - (P1) Pagination in ticket filter -> Make an API call when typing something in searcher (with a debounce time of 500ms) ✅
 - (P2) New table of ticket_status_history (ticket_id, status, status_datetime)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- (P1) Widget tests
+- (P1) Upload background and database to cloud provider
+- (P2) Integration tests -> Many problems here

@@ -66,4 +66,19 @@ class OrganizationService implements IOrganizationService {
       rethrow;
     }
   }
+
+  @override
+  Future<void> deleteOrganizations() async {
+    try {
+      Logger.debug('Deleting all organizations from the database...');
+      final response = await client.delete(Uri.parse(API_BASE_URL));
+
+      if (response.statusCode != 204) {
+        throw Exception('Failed to delete users');
+      }
+      Logger.info('All users have been deleted successfully');
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

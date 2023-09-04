@@ -25,8 +25,6 @@ class Event {
 
   // Factory method to create a new instance from a Map (fromJson)
   factory Event.fromJson(Map<String, dynamic> json) {
-    // DateTime dateTime = DateTime.parse(json['date']);
-    // CustomDateTime customDateTime = CustomDateTime(dateTime.year, dateTime.month, dateTime.day);
     return Event(
       id: json['id'],
       title: json['title'],
@@ -39,8 +37,6 @@ class Event {
   }
 
   Map<String, dynamic> toJson() {
-    // String formattedDate = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}T$time+01:00';
-
     return {
       'title': title,
       // 'date': formattedDate,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:validator/domain/entities/token.dart';
 import 'package:validator/domain/services/api_service_interface.dart';
 import 'package:validator/domain/services/auth_service_interface.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
@@ -10,7 +10,6 @@ import 'package:validator/domain/services/ticket_service_interface.dart';
 import 'package:validator/domain/services/ticket_status_history_service_interface.dart';
 import 'package:validator/domain/services/user_service_interface.dart';
 import 'package:validator/domain/services/validation_service_interface.dart';
-import 'package:validator/infrastructure/http/http_client.dart';
 import 'package:validator/infrastructure/services/api_service.dart';
 import 'package:validator/infrastructure/services/auth_service.dart';
 import 'package:validator/infrastructure/services/event_service.dart';
@@ -20,13 +19,12 @@ import 'package:validator/infrastructure/services/ticket_status_history_service.
 import 'package:validator/infrastructure/services/user_service.dart';
 import 'package:validator/infrastructure/services/validation_service.dart';
 
-@immutable
-abstract class Dependencies {
-  static void injectDependencies() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    GetIt.instance.registerSingleton<SharedPreferences>(sharedPreferences);
+import '../../http/http_client_test.dart';
 
-    GetIt.instance.registerLazySingleton<http.Client>(() => HttpClientFactory.create());
+@immutable
+abstract class DependenciesTest {
+  static void injectDependencies(Token token) {
+    GetIt.instance.registerLazySingleton<http.Client>(() => HttpClientFactoryTest.create(token));
 
     GetIt.instance.registerLazySingleton<IApiService>(
       () => ApiService(client: GetIt.instance<http.Client>()),
