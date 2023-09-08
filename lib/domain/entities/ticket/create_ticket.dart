@@ -12,7 +12,7 @@ class CreateTicket {
     return CreateTicket(
       price: json['price'],
       eventId: json['event_id'],
-      limit: json['ticket_limit'],
+      limit: json['limit'],
     );
   }
 
@@ -20,7 +20,7 @@ class CreateTicket {
     return {
       'price': price,
       'event_id': eventId,
-      'ticket_limit': limit,
+      'limit': limit,
     };
   }
 }

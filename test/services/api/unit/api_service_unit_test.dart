@@ -34,7 +34,7 @@ void main() {
 
         when(mockClient.get(Uri.parse(API_BASE_URL))).thenAnswer((_) async => http.Response('Internal Server Error', 500));
 
-        expect(apiService.connectAPI(), throwsException);
+        expect(() async => await apiService.connectAPI(), throwsException);
 
         verify(mockClient.get(Uri.parse(API_BASE_URL))).called(1);
       });

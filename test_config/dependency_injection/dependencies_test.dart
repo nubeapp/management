@@ -19,7 +19,7 @@ import 'package:validator/infrastructure/services/ticket_status_history_service.
 import 'package:validator/infrastructure/services/user_service.dart';
 import 'package:validator/infrastructure/services/validation_service.dart';
 
-import '../../http/http_client_test.dart';
+import '../http_client/http_client_test.dart';
 
 @immutable
 abstract class DependenciesTest {

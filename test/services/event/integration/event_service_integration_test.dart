@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import '../event_service_config_test.dart';
+import '../../../../test_config/config/services/event/event_service_config_test.dart';
 
 void main() {
   EventServiceConfigTest eventConfig = EventServiceConfigTest();

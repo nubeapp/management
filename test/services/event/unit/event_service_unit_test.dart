@@ -54,7 +54,7 @@ void main() {
 
         when(mockClient.get(Uri.parse(API_BASE_URL))).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.getEvents(), throwsException);
+        expect(() async => await eventService.getEvents(), throwsException);
 
         verify(mockClient.get(Uri.parse(API_BASE_URL))).called(1);
       });
@@ -89,7 +89,7 @@ void main() {
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/event/$mockId'))).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.getEventById(mockId), throwsException);
+        expect(() async => await eventService.getEventById(mockId), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL/event/$mockId'))).called(1);
       });
@@ -132,7 +132,7 @@ void main() {
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/favourites'))).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.getFavouriteEventsByUserId(), throwsException);
+        expect(() async => await eventService.getFavouriteEventsByUserId(), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL/favourites'))).called(1);
       });
@@ -175,7 +175,7 @@ void main() {
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/$mockOrganizationId'))).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.getEventsByOrganizationId(mockOrganizationId), throwsException);
+        expect(() async => await eventService.getEventsByOrganizationId(mockOrganizationId), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockOrganizationId'))).called(1);
       });
@@ -225,7 +225,7 @@ void main() {
           body: json.encode(mockEventObject.toJson()),
         )).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.createEvent(mockEventObject), throwsException);
+        expect(() async => await eventService.createEvent(mockEventObject), throwsException);
 
         verify(mockClient.post(
           Uri.parse(API_BASE_URL),
@@ -282,7 +282,7 @@ void main() {
                 body: json.encode(mockEventObject.toJson())))
             .thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.updateEventById(mockId, mockEventObject), throwsException);
+        expect(() async => await eventService.updateEventById(mockId, mockEventObject), throwsException);
 
         verify(mockClient.put(
           Uri.parse('$API_BASE_URL/$mockId'),
@@ -320,7 +320,7 @@ void main() {
           Uri.parse('$API_BASE_URL/event/$mockId'),
         )).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.deleteEventById(mockId), throwsException);
+        expect(() async => await eventService.deleteEventById(mockId), throwsException);
 
         verify(mockClient.delete(
           Uri.parse('$API_BASE_URL/event/$mockId'),
@@ -354,7 +354,7 @@ void main() {
           Uri.parse('$API_BASE_URL/$mockOrganizationId'),
         )).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.deleteEventsByOrganizationId(mockOrganizationId), throwsException);
+        expect(() async => await eventService.deleteEventsByOrganizationId(mockOrganizationId), throwsException);
 
         verify(mockClient.delete(
           Uri.parse('$API_BASE_URL/$mockOrganizationId'),
@@ -386,7 +386,7 @@ void main() {
           Uri.parse(API_BASE_URL),
         )).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(eventService.deleteAllEvents(), throwsException);
+        expect(() async => await eventService.deleteAllEvents(), throwsException);
 
         verify(mockClient.delete(
           Uri.parse(API_BASE_URL),

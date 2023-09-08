@@ -41,8 +41,6 @@ class UserService implements IUserService {
         final User user = User.fromJson(responseData);
         Logger.info('User with email ${user.email} has been retrieved successfully!');
         return user;
-      } else if (response.statusCode == 404) {
-        return null;
       } else {
         throw Exception('Failed to load user');
       }

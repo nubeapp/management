@@ -1,5 +1,33 @@
 /* 
   +----------------------------+
+  |     Mock User Responses    |
+  +----------------------------+
+*/
+
+const mockUserListResponse = [
+  {
+    "id": 1,
+    "name": "John",
+    "surname": "Doe",
+    "email": "johndoe@example.com",
+  },
+  {
+    "id": 2,
+    "name": "Jane",
+    "surname": "Smith",
+    "email": "janesmith@example.com",
+  }
+];
+
+const mockUserResponse = {
+  "id": 1,
+  "name": "John",
+  "surname": "Doe",
+  "email": "johndoe@example.com",
+};
+
+/* 
+  +----------------------------+
   |     Mock Auth Responses    |
   +----------------------------+
 */
@@ -65,6 +93,7 @@ const mockEventResponse = {
 
 final mockTicketSummaryListResponse = [
   {
+    "count": 2,
     "event": {
       "id": 1,
       "title": "Bad Bunny Concert",
@@ -79,6 +108,7 @@ final mockTicketSummaryListResponse = [
     ]
   },
   {
+    "count": 2,
     "event": {
       "id": 2,
       "title": "Rosalia Concert",
@@ -95,6 +125,7 @@ final mockTicketSummaryListResponse = [
 ];
 
 final mockTicketSummaryResponse = {
+  "count": 2,
   "event": {
     "id": 1,
     "title": "Bad Bunny Concert",
@@ -106,6 +137,22 @@ final mockTicketSummaryResponse = {
   "tickets": [
     {"id": 1, "reference": "2IR6ZOULKL2HOARDUI19", "price": 10.0, "status": "SOLD"},
     {"id": 2, "reference": "ZT1HT93LEGSVCIEEGAIJ", "price": 10.0, "status": "SOLD"}
+  ]
+};
+
+final mockTicketSummaryAvailablesResponse = {
+  "count": 2,
+  "event": {
+    "id": 1,
+    "title": "Bad Bunny Concert",
+    "date": "2023-12-07T18:00:00+01:00",
+    "time": "18:00",
+    "venue": "Wizink Center",
+    "organization": {"id": 1, "name": "UNIVERSAL MUSIC SPAIN"}
+  },
+  "tickets": [
+    {"id": 1, "reference": "2IR6ZOULKL2HOARDUI19", "price": 10.0, "status": "AVAILABLE"},
+    {"id": 2, "reference": "ZT1HT93LEGSVCIEEGAIJ", "price": 10.0, "status": "AVAILABLE"}
   ]
 };
 
@@ -133,4 +180,31 @@ const mockOrganizationListResponse = [
     "id": 3,
     "name": "SONY MUSIC ENTERTAINMENT",
   }
+];
+
+/* 
+  +------------------------------------+
+  | Mock TicketStatusHistory Responses |
+  +------------------------------------+
+*/
+
+const mockTicketStatusHistoryListResponse = [
+  {
+    "id": 1,
+    "ticket_id": 11,
+    "status": "AVAILABLE",
+    "status_at": "2023-12-07T18:00:00+01:00",
+  },
+  {
+    "id": 2,
+    "ticket_id": 11,
+    "status": "SOLD",
+    "status_at": "2023-12-07T19:00:00+01:00",
+  },
+  {
+    "id": 3,
+    "ticket_id": 11,
+    "status": "VALIDATED",
+    "status_at": "2023-12-07T20:00:00+01:00",
+  },
 ];

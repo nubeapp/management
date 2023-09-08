@@ -1,19 +1,21 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:validator/domain/services/api_service_interface.dart';
 import 'package:validator/infrastructure/services/api_service.dart';
 
-void main() {
-  group('ApiService Integration Test', () {
-    late ApiService apiService;
-    late http.Client httpClient;
+import '../../../../test_config/config/services/api/api_service_config_test.dart';
 
-    setUp(() {
-      httpClient = http.Client();
-      apiService = ApiService(client: httpClient);
+void main() {
+  ApiServiceConfigTest apiConfig = ApiServiceConfigTest();
+  group('ApiService Integration Test', () {
+    late IApiService apiService;
+
+    setUpAll(() async {
+      apiService = await apiConfig.setUpDatabase();
     });
 
-    tearDown(() {
-      httpClient.close();
+    tearDownAll(() async {
+      await apiConfig.cleanUpDatabase();
     });
 
     test('connectAPI returns server is running message on success', () async {

@@ -1,12 +1,10 @@
+import '../dependency_injection/dependencies_test.dart';
 import 'package:validator/domain/entities/credentials.dart';
-import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/entities/token.dart';
 import 'package:validator/domain/entities/user.dart';
 import 'package:validator/infrastructure/services/auth_service.dart';
 import 'package:validator/infrastructure/services/user_service.dart';
 import 'package:http/http.dart' as http;
-
-import '../services/dependency_injection/dependencies_test.dart';
 
 class ConfigTest {
   late AuthService _authService;

@@ -60,7 +60,7 @@ void main() {
           },
         )).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(authService.login(mockCredentialsObject), throwsException);
+        expect(() async => await authService.login(mockCredentialsObject), throwsException);
 
         verify(mockClient.post(
           Uri.parse(API_BASE_URL),

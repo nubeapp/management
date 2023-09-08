@@ -45,7 +45,7 @@ void main() {
 
         when(mockClient.get(Uri.parse(API_BASE_URL))).thenAnswer((_) async => http.Response('Not found', 404));
 
-        expect(organizationService.getOrganizations(), throwsException);
+        expect(() async => await organizationService.getOrganizations(), throwsException);
 
         verify(mockClient.get(Uri.parse(API_BASE_URL))).called(1);
       });
@@ -75,7 +75,7 @@ void main() {
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/$mockOrganizationId'))).thenAnswer((_) async => http.Response('Not found', 404));
 
-        expect(organizationService.getOrganizationById(mockOrganizationId), throwsException);
+        expect(() async => await organizationService.getOrganizationById(mockOrganizationId), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockOrganizationId'))).called(1);
       });
@@ -118,7 +118,7 @@ void main() {
                 body: json.encode(mockOrganizationObject.toJson())))
             .thenAnswer((_) async => http.Response('Not found', 404));
 
-        expect(organizationService.createOrganization(mockOrganizationObject), throwsException);
+        expect(() async => await organizationService.createOrganization(mockOrganizationObject), throwsException);
 
         verify(mockClient.post(Uri.parse(API_BASE_URL),
                 headers: <String, String>{
@@ -126,6 +126,72 @@ void main() {
                 },
                 body: json.encode(mockOrganizationObject.toJson())))
             .called(1);
+      });
+    });
+
+    group('deleteOrganizationById', () {
+      test('is called once', () async {
+        final mockClient = MockClient();
+        organizationService = OrganizationService(client: mockClient);
+        const int mockOrganizationId = 1;
+
+        when(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockOrganizationId'),
+        )).thenAnswer((_) async => http.Response('[]', 204));
+
+        await organizationService.deleteOrganizationById(mockOrganizationId);
+
+        verify(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockOrganizationId'),
+        )).called(1);
+      });
+
+      test('throws an exception if the http call completes with an error', () {
+        final mockClient = MockClient();
+        organizationService = OrganizationService(client: mockClient);
+        const int mockOrganizationId = 1;
+
+        when(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockOrganizationId'),
+        )).thenAnswer((_) async => http.Response('Not Found', 404));
+
+        expect(() async => await organizationService.deleteOrganizationById(mockOrganizationId), throwsException);
+
+        verify(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockOrganizationId'),
+        )).called(1);
+      });
+    });
+
+    group('deleteAllOrganizations', () {
+      test('is called once', () async {
+        final mockClient = MockClient();
+        organizationService = OrganizationService(client: mockClient);
+
+        when(mockClient.delete(
+          Uri.parse(API_BASE_URL),
+        )).thenAnswer((_) async => http.Response('[]', 204));
+
+        await organizationService.deleteOrganizations();
+
+        verify(mockClient.delete(
+          Uri.parse(API_BASE_URL),
+        )).called(1);
+      });
+
+      test('throws an exception if the http call completes with an error', () {
+        final mockClient = MockClient();
+        organizationService = OrganizationService(client: mockClient);
+
+        when(mockClient.delete(
+          Uri.parse(API_BASE_URL),
+        )).thenAnswer((_) async => http.Response('Not Found', 404));
+
+        expect(() async => await organizationService.deleteOrganizations(), throwsException);
+
+        verify(mockClient.delete(
+          Uri.parse(API_BASE_URL),
+        )).called(1);
       });
     });
   });

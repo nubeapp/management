@@ -1,29 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:validator/domain/entities/credentials.dart';
 import 'package:validator/domain/entities/token.dart';
-import 'package:validator/domain/entities/user.dart';
-import 'package:validator/infrastructure/services/auth_service.dart';
-import 'package:validator/infrastructure/services/user_service.dart'; // Update with the correct import path
+import 'package:validator/domain/services/auth_service_interface.dart';
+
+import '../../../../test_config/config/services/auth/auth_service_config_test.dart'; // Update with the correct import path
 
 void main() {
-  late AuthService authService;
-  late UserService userService;
-  late http.Client httpClient;
-  const mockUser = User(email: 'test@test.com', name: 'test', surname: 'test', password: 'testpassword');
+  AuthServiceConfigTest authConfig = AuthServiceConfigTest();
 
   group('AuthService Integration Test', () {
-    setUpAll(() async {
-      httpClient = http.Client();
-      userService = UserService(client: httpClient);
-      authService = AuthService(client: httpClient);
+    late IAuthService authService;
 
-      await userService.createUser(mockUser);
+    setUpAll(() async {
+      authService = await authConfig.setUpDatabase();
     });
 
     tearDownAll(() async {
-      await userService.deleteUsers();
-      httpClient.close();
+      await authConfig.cleanUpDatabase();
     });
 
     test('login returns a Token on successful login', () async {

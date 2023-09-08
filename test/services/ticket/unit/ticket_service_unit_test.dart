@@ -63,7 +63,7 @@ void main() {
 
         when(mockClient.get(Uri.parse('$API_BASE_URL/events/$mockEventId'))).thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(ticketService.getTicketsByUserIdEventId(mockEventId), throwsException);
+        expect(() async => await ticketService.getTicketsByUserIdEventId(mockEventId), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL/events/$mockEventId'))).called(1);
       });
@@ -131,7 +131,7 @@ void main() {
         when(mockClient.get(Uri.parse('$API_BASE_URL?limit=$ticketLimitMock&offset=$ticketOffsetMock')))
             .thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(ticketService.getTicketsByUserId(ticketLimitMock, ticketOffsetMock), throwsException);
+        expect(() async => await ticketService.getTicketsByUserId(ticketLimitMock, ticketOffsetMock), throwsException);
 
         verify(mockClient.get(Uri.parse('$API_BASE_URL?limit=$ticketLimitMock&offset=$ticketOffsetMock'))).called(1);
       });
@@ -142,14 +142,14 @@ void main() {
         final mockClient = MockClient();
         ticketService = TicketService(client: mockClient);
         int mockEventId = 1;
-        int limit = 2;
-        int offset = 0;
+        int mockLimit = 2;
+        int mockOffset = 0;
 
-        when(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).thenAnswer(
+        when(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId?limit=$mockLimit&offset=$mockOffset'))).thenAnswer(
           (_) async => http.Response(json.encode(mockTicketSummaryResponse), 200),
         );
 
-        final ticketSummary = await ticketService.getTicketsByEventId(eventId: mockEventId, limit: limit, offset: offset);
+        final ticketSummary = await ticketService.getTicketsByEventId(eventId: mockEventId, limit: mockLimit, offset: mockOffset);
         List<Ticket> tickets = ticketSummary.tickets;
 
         expect(ticketSummary, isA<TicketSummary>());
@@ -171,21 +171,70 @@ void main() {
         expect(ticketSummary.event.organization!.id, equals(1));
         expect(ticketSummary.event.organization!.name, "UNIVERSAL MUSIC SPAIN");
 
-        verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).called(1);
+        verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId?limit=$mockLimit&offset=$mockOffset'))).called(1);
       });
 
       test('throws an exception if the http call completes with an error', () {
         final mockClient = MockClient();
         ticketService = TicketService(client: mockClient);
         int mockEventId = 1;
-        int limit = 2;
-        int offset = 0;
+        int mockLimit = 2;
+        int mockOffset = 0;
 
-        when(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).thenAnswer((_) async => http.Response('Not Found', 404));
+        when(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId?limit=$mockLimit&offset=$mockOffset')))
+            .thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(ticketService.getTicketsByEventId(eventId: mockEventId, limit: limit, offset: offset), throwsException);
+        expect(() async => await ticketService.getTicketsByEventId(eventId: mockEventId, limit: mockLimit, offset: mockOffset), throwsException);
 
-        verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId'))).called(1);
+        verify(mockClient.get(Uri.parse('$API_BASE_URL/$mockEventId?limit=$mockLimit&offset=$mockOffset'))).called(1);
+      });
+    });
+
+    group('getTicketsByEventId', () {
+      test('return list of available tickets for the event', () async {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        int mockEventId = 1;
+
+        when(mockClient.get(Uri.parse('$API_BASE_URL/available/$mockEventId'))).thenAnswer(
+          (_) async => http.Response(json.encode(mockTicketSummaryAvailablesResponse), 200),
+        );
+
+        final ticketSummary = await ticketService.getTicketsAvailableByEventId(mockEventId);
+        List<Ticket> tickets = ticketSummary.tickets;
+
+        expect(ticketSummary, isA<TicketSummary>());
+        expect(tickets, isA<List<Ticket>>());
+        expect(tickets.length, equals(2));
+        expect(tickets[0].id, equals(1));
+        expect(tickets[1].id, equals(2));
+        expect(tickets[0].price, equals(10.0));
+        expect(tickets[1].price, equals(10.0));
+        expect(tickets[0].reference, "2IR6ZOULKL2HOARDUI19");
+        expect(tickets[1].reference, "ZT1HT93LEGSVCIEEGAIJ");
+        expect(tickets[0].status, TicketStatus.AVAILABLE);
+        expect(tickets[1].status, TicketStatus.AVAILABLE);
+        expect(ticketSummary.event.id, equals(1));
+        expect(ticketSummary.event.title, "Bad Bunny Concert");
+        expect(ticketSummary.event.date, '07-12-2023');
+        expect(ticketSummary.event.time, '18:00');
+        expect(ticketSummary.event.venue, 'Wizink Center');
+        expect(ticketSummary.event.organization!.id, equals(1));
+        expect(ticketSummary.event.organization!.name, "UNIVERSAL MUSIC SPAIN");
+
+        verify(mockClient.get(Uri.parse('$API_BASE_URL/available/$mockEventId'))).called(1);
+      });
+
+      test('throws an exception if the http call completes with an error', () {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        int mockEventId = 1;
+
+        when(mockClient.get(Uri.parse('$API_BASE_URL/available/$mockEventId'))).thenAnswer((_) async => http.Response('Not Found', 404));
+
+        expect(() async => await ticketService.getTicketsAvailableByEventId(mockEventId), throwsException);
+
+        verify(mockClient.get(Uri.parse('$API_BASE_URL/available/$mockEventId'))).called(1);
       });
     });
 
@@ -248,7 +297,7 @@ void main() {
           (_) async => http.Response('Not Found', 404),
         );
 
-        expect(ticketService.createTickets(mockCreateTicketObject), throwsException);
+        expect(() async => await ticketService.createTickets(mockCreateTicketObject), throwsException);
 
         verify(mockClient.post(Uri.parse(API_BASE_URL),
                 headers: <String, String>{
@@ -313,7 +362,7 @@ void main() {
                 body: json.encode(mockOrderObject.toJson())))
             .thenAnswer((_) async => http.Response('Not Found', 404));
 
-        expect(ticketService.buyTickets(mockOrderObject), throwsException);
+        expect(() async => await ticketService.buyTickets(mockOrderObject), throwsException);
 
         verify(mockClient.post(Uri.parse('$API_BASE_URL/buy'),
                 headers: <String, String>{
@@ -321,6 +370,73 @@ void main() {
                 },
                 body: json.encode(mockOrderObject.toJson())))
             .called(1);
+      });
+    });
+
+    group('cancelTicket', () {
+      test('returns canceled ticket', () async {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        const mockTicketId = 1;
+
+        // when(mockClient.get(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'))).thenAnswer(
+        //   (_) async => http.Response(json.encode(mockTicketSummaryListResponse), 200),
+        // );
+
+        // final ticketSummary = await ticketService.getTicketsByUserId(ticketLimitMock, ticketOffsetMock);
+
+        // expect(ticketSummary, isA<List<TicketSummary>>());
+        // expect(ticketSummary.length, equals(2));
+        // expect(ticketSummary[0].tickets, isA<List<Ticket>>());
+        // expect(ticketSummary[0].tickets.length, equals(2));
+        // expect(ticketSummary[0].event.id, equals(1));
+        // expect(ticketSummary[0].event.title, 'Bad Bunny Concert');
+        // expect(ticketSummary[0].event.date, '07-12-2023');
+        // expect(ticketSummary[0].event.time, '18:00');
+        // expect(ticketSummary[0].event.venue, 'Wizink Center');
+        // expect(ticketSummary[0].event.organization!.id, equals(1));
+        // expect(ticketSummary[0].event.organization!.name, 'UNIVERSAL MUSIC SPAIN');
+        // expect(ticketSummary[0].tickets[0].id, equals(1));
+        // expect(ticketSummary[0].tickets[1].id, equals(2));
+        // expect(ticketSummary[0].tickets[0].price, equals(10.0));
+        // expect(ticketSummary[0].tickets[1].price, equals(10.0));
+        // expect(ticketSummary[0].tickets[0].reference, '2IR6ZOULKL2HOARDUI19');
+        // expect(ticketSummary[0].tickets[1].reference, 'ZT1HT93LEGSVCIEEGAIJ');
+        // expect(ticketSummary[0].tickets[0].status, TicketStatus.SOLD);
+        // expect(ticketSummary[0].tickets[1].status, TicketStatus.SOLD);
+        // expect(ticketSummary[1].tickets, isA<List<Ticket>>());
+        // expect(ticketSummary[1].tickets.length, equals(2));
+        // expect(ticketSummary[1].event.id, equals(2));
+        // expect(ticketSummary[1].event.title, 'Rosalia Concert');
+        // expect(ticketSummary[1].event.date, '14-12-2023');
+        // expect(ticketSummary[1].event.time, '18:00');
+        // expect(ticketSummary[1].event.venue, 'Wizink Center');
+        // expect(ticketSummary[1].event.organization!.id, equals(1));
+        // expect(ticketSummary[1].event.organization!.name, 'UNIVERSAL MUSIC SPAIN');
+        // expect(ticketSummary[1].tickets[0].id, equals(3));
+        // expect(ticketSummary[1].tickets[1].id, equals(4));
+        // expect(ticketSummary[1].tickets[0].price, equals(20.0));
+        // expect(ticketSummary[1].tickets[1].price, equals(20.0));
+        // expect(ticketSummary[1].tickets[0].reference, '4JUAEAWPB1S6KSSWPN80');
+        // expect(ticketSummary[1].tickets[1].reference, 'Y3OPY34TJ9FH78UV4BXG');
+        // expect(ticketSummary[1].tickets[0].status, TicketStatus.SOLD);
+        // expect(ticketSummary[1].tickets[1].status, TicketStatus.SOLD);
+
+        // verify(mockClient.get(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'))).called(1);
+      });
+
+      test('throws an exception if the http call completes with an error', () {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        const ticketLimitMock = 5;
+        const ticketOffsetMock = 5;
+
+        when(mockClient.get(Uri.parse('$API_BASE_URL?limit=$ticketLimitMock&offset=$ticketOffsetMock')))
+            .thenAnswer((_) async => http.Response('Not Found', 404));
+
+        expect(() async => await ticketService.getTicketsByUserId(ticketLimitMock, ticketOffsetMock), throwsException);
+
+        verify(mockClient.get(Uri.parse('$API_BASE_URL?limit=$ticketLimitMock&offset=$ticketOffsetMock'))).called(1);
       });
     });
   });

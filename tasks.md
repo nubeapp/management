@@ -20,14 +20,23 @@
 - (P1) Let search references in lower or upper case ✅
 - (P3) Support multiple tickets type and multiple prices for tickets of the same event
 - (P3) 'Add tickets' feature
-- (P2) Show TicketStatus history, with StatusLabel, Date and Time
+- (P2) Show TicketStatus history, with StatusLabel, Date and Time ✅
 - (P2) Add new feature of EventStatus (INCOMING, IN PROGRESS, FINISHED, CANCELED), and if some event is canceled, cancel all their tickets. Also, dont let buy new tickets if the event is 'IN PROGRESS' or 'FINISHED' or 'CANCELED'
 - (P3) Support request access by email -> Need a new table that stores the user_id that requested the access
 - (P1) Pagination in ticket filter -> Make an API call when typing something in searcher (with a debounce time of 500ms) ✅
-- (P2) New table of ticket_status_history (ticket_id, status, status_datetime)
+- (P2) New table of ticket_status_history (ticket_id, status, status_datetime) ✅
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- (P1) Widget tests
-- (P1) Upload background and database to cloud provider
-- (P2) Integration tests -> Many problems here
+- (P2 - 30/09/2023) Widget tests
+- (P4 - 07/11/2023) Deploy background and database to cloud provider
+- (P1 - 15/09/2023) Integration tests:
+    - User
+    - Validation
+    - TicketStatusHistory
+- (P1 - 15/09/2023) Unit test:
+    - Utilities ✅
+    - User ✅
+    - TicketStatusHistory ✅
+    - Review every test
+- (P3 - 31/10/2023) Backend testing and architecture

@@ -68,6 +68,22 @@ class OrganizationService implements IOrganizationService {
   }
 
   @override
+  Future<void> deleteOrganizationById(int organizationId) async {
+    try {
+      Logger.debug('Deleting organization with id $organizationId...');
+      final response = await client.delete(Uri.parse('$API_BASE_URL/$organizationId'));
+
+      if (response.statusCode != 204) {
+        throw Exception('Failed to delete organization by id. Status code: ${response.statusCode}');
+      }
+
+      Logger.info('Organization with id $organizationId has been deleted successfully!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> deleteOrganizations() async {
     try {
       Logger.debug('Deleting all organizations from the database...');

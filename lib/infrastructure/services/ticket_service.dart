@@ -183,7 +183,7 @@ class TicketService implements ITicketService {
       final response = await client.delete(Uri.parse('$API_BASE_URL/event/$eventId'));
 
       if (response.statusCode != 204) {
-        throw Exception('Failed to delete events by organization_id. Status code: ${response.statusCode}');
+        throw Exception('Failed to delete tickets by event_id. Status code: ${response.statusCode}');
       }
       Logger.info('Tickets by event_id $eventId have been deleted successfully!');
     } catch (e) {

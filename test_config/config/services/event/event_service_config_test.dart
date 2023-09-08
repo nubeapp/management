@@ -1,10 +1,9 @@
 import 'package:get_it/get_it.dart';
+import '../../config_test.dart';
 import 'package:validator/domain/entities/event.dart';
 import 'package:validator/domain/entities/organization.dart';
 import 'package:validator/domain/services/event_service_interface.dart';
 import 'package:validator/domain/services/organization_service_interface.dart';
-
-import '../../config/config_test.dart';
 
 class EventServiceConfigTest extends ConfigTest {
   late IEventService _eventService;
