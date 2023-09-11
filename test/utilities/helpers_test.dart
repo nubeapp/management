@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:validator/domain/entities/ticket/ticket_status.dart';
 import 'package:validator/infrastructure/utilities/helpers.dart';
-import 'package:validator/presentation/widgets/status_label.dart';
 
 void main() {
   group('Helpers', () {

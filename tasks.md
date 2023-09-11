@@ -30,13 +30,13 @@
 
 - (P2 - 30/09/2023) Widget tests
 - (P4 - 07/11/2023) Deploy background and database to cloud provider
-- (P1 - 15/09/2023) Integration tests:
-    - User
-    - Validation
-    - TicketStatusHistory
-- (P1 - 15/09/2023) Unit test:
+- (P1 - 15/09/2023) Integration tests: ✅
+    - User ✅
+    - Validation ✅
+    - TicketStatusHistory ✅
+- (P1 - 15/09/2023) Unit test: ✅
     - Utilities ✅
     - User ✅
     - TicketStatusHistory ✅
-    - Review every test
+    - Review every test ✅
 - (P3 - 31/10/2023) Backend testing and architecture

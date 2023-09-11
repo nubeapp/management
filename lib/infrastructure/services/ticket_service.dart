@@ -140,7 +140,7 @@ class TicketService implements ITicketService {
   }
 
   @override
-  Future<void> cancelTicket(int ticketId) async {
+  Future<String> cancelTicket(int ticketId) async {
     try {
       Logger.debug('Canceling ticket with id $ticketId...');
       final response = await client.put(
@@ -151,7 +151,8 @@ class TicketService implements ITicketService {
       );
 
       if (response.statusCode == 200) {
-        Logger.info('Ticket have been updated successfully!');
+        Logger.info('Ticket has been canceled successfully!');
+        return 'Ticket has been canceled successfully!';
       } else {
         throw Exception('Failed to update tickets');
       }

@@ -379,64 +379,101 @@ void main() {
         ticketService = TicketService(client: mockClient);
         const mockTicketId = 1;
 
-        // when(mockClient.get(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'))).thenAnswer(
-        //   (_) async => http.Response(json.encode(mockTicketSummaryListResponse), 200),
-        // );
+        when(mockClient.put(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'), headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'}))
+            .thenAnswer(
+          (_) async => http.Response('Ticket has been canceled successfully!', 200),
+        );
 
-        // final ticketSummary = await ticketService.getTicketsByUserId(ticketLimitMock, ticketOffsetMock);
+        String msg = await ticketService.cancelTicket(mockTicketId);
 
-        // expect(ticketSummary, isA<List<TicketSummary>>());
-        // expect(ticketSummary.length, equals(2));
-        // expect(ticketSummary[0].tickets, isA<List<Ticket>>());
-        // expect(ticketSummary[0].tickets.length, equals(2));
-        // expect(ticketSummary[0].event.id, equals(1));
-        // expect(ticketSummary[0].event.title, 'Bad Bunny Concert');
-        // expect(ticketSummary[0].event.date, '07-12-2023');
-        // expect(ticketSummary[0].event.time, '18:00');
-        // expect(ticketSummary[0].event.venue, 'Wizink Center');
-        // expect(ticketSummary[0].event.organization!.id, equals(1));
-        // expect(ticketSummary[0].event.organization!.name, 'UNIVERSAL MUSIC SPAIN');
-        // expect(ticketSummary[0].tickets[0].id, equals(1));
-        // expect(ticketSummary[0].tickets[1].id, equals(2));
-        // expect(ticketSummary[0].tickets[0].price, equals(10.0));
-        // expect(ticketSummary[0].tickets[1].price, equals(10.0));
-        // expect(ticketSummary[0].tickets[0].reference, '2IR6ZOULKL2HOARDUI19');
-        // expect(ticketSummary[0].tickets[1].reference, 'ZT1HT93LEGSVCIEEGAIJ');
-        // expect(ticketSummary[0].tickets[0].status, TicketStatus.SOLD);
-        // expect(ticketSummary[0].tickets[1].status, TicketStatus.SOLD);
-        // expect(ticketSummary[1].tickets, isA<List<Ticket>>());
-        // expect(ticketSummary[1].tickets.length, equals(2));
-        // expect(ticketSummary[1].event.id, equals(2));
-        // expect(ticketSummary[1].event.title, 'Rosalia Concert');
-        // expect(ticketSummary[1].event.date, '14-12-2023');
-        // expect(ticketSummary[1].event.time, '18:00');
-        // expect(ticketSummary[1].event.venue, 'Wizink Center');
-        // expect(ticketSummary[1].event.organization!.id, equals(1));
-        // expect(ticketSummary[1].event.organization!.name, 'UNIVERSAL MUSIC SPAIN');
-        // expect(ticketSummary[1].tickets[0].id, equals(3));
-        // expect(ticketSummary[1].tickets[1].id, equals(4));
-        // expect(ticketSummary[1].tickets[0].price, equals(20.0));
-        // expect(ticketSummary[1].tickets[1].price, equals(20.0));
-        // expect(ticketSummary[1].tickets[0].reference, '4JUAEAWPB1S6KSSWPN80');
-        // expect(ticketSummary[1].tickets[1].reference, 'Y3OPY34TJ9FH78UV4BXG');
-        // expect(ticketSummary[1].tickets[0].status, TicketStatus.SOLD);
-        // expect(ticketSummary[1].tickets[1].status, TicketStatus.SOLD);
+        expect(msg, 'Ticket has been canceled successfully!');
 
-        // verify(mockClient.get(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'))).called(1);
+        verify(mockClient.put(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'), headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'}))
+            .called(1);
       });
 
       test('throws an exception if the http call completes with an error', () {
         final mockClient = MockClient();
         ticketService = TicketService(client: mockClient);
-        const ticketLimitMock = 5;
-        const ticketOffsetMock = 5;
+        const mockTicketId = 1;
 
-        when(mockClient.get(Uri.parse('$API_BASE_URL?limit=$ticketLimitMock&offset=$ticketOffsetMock')))
-            .thenAnswer((_) async => http.Response('Not Found', 404));
+        when(mockClient.put(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'), headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'}))
+            .thenAnswer(
+          (_) async => http.Response('Not Found', 404),
+        );
 
-        expect(() async => await ticketService.getTicketsByUserId(ticketLimitMock, ticketOffsetMock), throwsException);
+        expect(() async => await ticketService.cancelTicket(mockTicketId), throwsException);
 
-        verify(mockClient.get(Uri.parse('$API_BASE_URL?limit=$ticketLimitMock&offset=$ticketOffsetMock'))).called(1);
+        verify(mockClient.put(Uri.parse('$API_BASE_URL/cancel/$mockTicketId'), headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'}))
+            .called(1);
+      });
+    });
+
+    group('deleteTicketById', () {
+      test('is called once', () async {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        const int mockTicketId = 1;
+
+        when(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockTicketId'),
+        )).thenAnswer((_) async => http.Response('[]', 204));
+
+        await ticketService.deleteTicketById(mockTicketId);
+
+        verify(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockTicketId'),
+        )).called(1);
+      });
+
+      test('throws an exception if the http call completes with an error', () {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        const int mockTicketId = 1;
+
+        when(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockTicketId'),
+        )).thenAnswer((_) async => http.Response('Not Found', 404));
+
+        expect(() async => await ticketService.deleteTicketById(mockTicketId), throwsException);
+
+        verify(mockClient.delete(
+          Uri.parse('$API_BASE_URL/$mockTicketId'),
+        )).called(1);
+      });
+    });
+
+    group('deleteTicketsByEventId', () {
+      test('is called once', () async {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        const int mockEventId = 1;
+
+        when(mockClient.delete(
+          Uri.parse('$API_BASE_URL/event/$mockEventId'),
+        )).thenAnswer((_) async => http.Response('[]', 204));
+
+        await ticketService.deleteTicketsByEventId(mockEventId);
+
+        verify(mockClient.delete(
+          Uri.parse('$API_BASE_URL/event/$mockEventId'),
+        )).called(1);
+      });
+
+      test('throws an exception if the http call completes with an error', () {
+        final mockClient = MockClient();
+        ticketService = TicketService(client: mockClient);
+        const int mockEventId = 1;
+
+        when(mockClient.delete(
+          Uri.parse('$API_BASE_URL/event/$mockEventId'),
+        )).thenAnswer((_) async => http.Response('Not Found', 404));
+
+        expect(() async => await ticketService.deleteTicketsByEventId(mockEventId), throwsException);
+
+        verify(mockClient.delete(
+          Uri.parse('$API_BASE_URL/event/$mockEventId'),
+        )).called(1);
       });
     });
   });

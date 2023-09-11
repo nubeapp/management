@@ -10,7 +10,7 @@ abstract class ITicketService {
   Future<TicketSummary> getTicketsByEventId({required int eventId, required int limit, required int offset, String? status, String? filter});
   Future<TicketSummary> createTickets(CreateTicket ticketData);
   Future<TicketSummary> buyTickets(Order order);
-  Future<void> cancelTicket(int ticketId);
+  Future<String> cancelTicket(int ticketId);
   Future<void> deleteTicketById(int ticketId);
   Future<void> deleteTicketsByEventId(int eventId);
 }
